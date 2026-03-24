@@ -1,0 +1,65 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Admin {
+  id            Int       @id @default(autoincrement())
+  username      String    @unique
+  email         String    @unique
+  password      String
+  nomeCompleto  String
+  createdAt     DateTime  @default(now())
+  noticias      Noticia[]
+}
+
+model Noticia {
+  id            Int      @id @default(autoincrement())
+  titulo        String
+  slug          String   @unique
+  resumo        String?
+  conteudo      String
+  imagem        String?
+  categoria     String   @default("Geral")
+  publicado     Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  autorId       Int
+  autor         Admin    @relation(fields: [autorId], references: [id])
+}
+
+model PedidoOracao {
+  id        Int      @id @default(autoincrement())
+  nome      String?
+  pedido    String
+  anonimo   Boolean  @default(false)
+  atendido  Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Horario {
+  id        Int      @id @default(autoincrement())
+  dia       String
+  horario   String
+  tipo      String
+  local     String?  @default("Igreja Principal")
+  ativo     Boolean  @default(true)
+}
+
+model Foto {
+  id        Int      @id @default(autoincrement())
+  url       String
+  titulo    String?
+  evento    String?
+  createdAt DateTime @default(now())
+}
+
+model ArquivoMorto {
+  id        Int      @id @default(autoincrement())
+  tipo      String
+  dados     String
+  arquivadoEm DateTime @default(now())
+}

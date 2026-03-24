@@ -1,0 +1,55 @@
+// ==================== GALERIA ====================
+// Rota pública
+app.get('/api/galeria/', async (req, res) => {
+    try {
+        const galeria = await db.all('SELECT * FROM galeria ORDER BY created_at DESC');
+        res.json(galeria || []);
+    } catch (error) {
+        res.json([]);
+    }
+});
+
+// Rotas admin com autenticação
+app.get('/api/admin/galeria', authMiddleware, async (req, res) => {
+    try {
+        const galeria = await db.all('SELECT * FROM galeria ORDER BY created_at DESC');
+        res.json(galeria || []);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/admin/galeria', authMiddleware, async (req, res) => {
+    try {
+        const { titulo, descricao, arquivo, tipo } = req.body;
+        const result = await db.run(
+            'INSERT INTO galeria (titulo, descricao, arquivo, tipo) VALUES (?, ?, ?, ?)',
+            [titulo, descricao || '', arquivo, tipo]
+        );
+        const item = await db.get('SELECT * FROM galeria WHERE id = ?', [result.lastID]);
+        res.status(201).json(item);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.put('/api/admin/galeria/:id', authMiddleware, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { titulo, descricao } = req.body;
+        await db.run('UPDATE galeria SET titulo = ?, descricao = ? WHERE id = ?', [titulo, descricao || '', id]);
+        const item = await db.get('SELECT * FROM galeria WHERE id = ?', [id]);
+        res.json(item);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.delete('/api/admin/galeria/:id', authMiddleware, async (req, res) => {
+    try {
+        await db.run('DELETE FROM galeria WHERE id = ?', [req.params.id]);
+        res.status(204).send();
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pastorais - Paróquia São Miguel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="header"><div class="container"><nav class="nav-main"><a href="/" class="logo"><div class="logo-icon"><i class="fas fa-shield-alt"></i></div><div class="logo-text"><h1>São Miguel Arcanjo</h1><span>Paróquia Católica</span></div></a><ul class="nav-menu"><li><a href="/">Início</a></li><li><a href="/pages/sobre.html">A Paróquia</a></li><li><a href="/pages/horarios.html">Horários</a></li><li><a href="/pages/pastorais.html">Pastorais</a></li><li><a href="/pages/eventos.html">Eventos</a></li><li><a href="/pages/noticias.html">Notícias</a></li><li><a href="/pages/contato.html">Contato</a></li><li><a href="/pages/admin/login.html" class="btn-donate">Admin</a></li></ul></nav></div></header>
+
+    <section class="page-header"><div class="container"><h1>Pastorais e Movimentos</h1><p>Conheça os grupos da nossa comunidade</p></div></section>
+
+    <div class="container py-5"><div id="pastorais-container" class="grid-4"></div></div>
+
+    <footer class="footer"><div class="container"><div class="copyright">&copy; 2025 Paróquia São Miguel Arcanjo</div></div></footer>
+
+    <script>
+        fetch('/api/pastorais/').then(r=>r.json()).then(data => {
+            let html = '';
+            data.forEach(p => {
+                html += `<div class="card-minimal"><i class="fas fa-hands-helping card-icon"></i><h4>${p.nome}</h4><p>${p.descricao}</p>${p.responsavel ? `<small><strong>Responsável:</strong> ${p.responsavel}</small>` : ''}</div>`;
+            });
+            document.getElementById('pastorais-container').innerHTML = html || '<p>Nenhuma pastoral cadastrada.</p>';
+        });
+    </script>
+    <style>.py-5{padding:80px 0}</style>
+</body>
+</html>

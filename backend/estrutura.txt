@@ -1,0 +1,22 @@
+paroquia-sao-miguel/
+├── backend/
+│   ├── src/
+│   │   ├── controllers/
+│   │   │   ├── AuthController.js
+│   │   │   └── NoticiaController.js
+│   │   ├── middlewares/
+│   │   │   └── authMiddleware.js
+│   │   ├── routes/
+│   │   │   ├── index.js
+│   │   │   ├── authRoutes.js
+│   │   │   └── noticiaRoutes.js
+│   │   ├── database.js
+│   │   └── server.js
+│   ├── prisma/
+│   │   └── schema.prisma
+│   ├── package.json
+│   └── Dockerfile
+├── frontend/  (O design que você aprovou, sem alterações)
+├── nginx/
+│   └── nginx.conf
+└── docker-compose.yml

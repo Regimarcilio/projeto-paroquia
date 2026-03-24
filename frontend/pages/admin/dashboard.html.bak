@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Paróquia São Miguel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f5f7fb; }
+        .sidebar { position: fixed; left: 0; top: 0; width: 280px; height: 100%; background: linear-gradient(135deg, #0f2b3d 0%, #1a3a4f 100%); color: white; z-index: 100; }
+        .sidebar-header { padding: 25px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-header i { font-size: 2rem; }
+        .sidebar-header h2 { margin-top: 10px; font-size: 1.3rem; }
+        .sidebar-nav { padding: 20px 0; }
+        .nav-item { padding: 12px 25px; margin: 5px 15px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.3s; }
+        .nav-item:hover { background: rgba(255,255,255,0.1); }
+        .nav-item.active { background: #c9a227; color: #0f2b3d; font-weight: 600; }
+        .main-content { margin-left: 280px; padding: 30px; }
+        .top-bar { background: white; border-radius: 16px; padding: 20px 30px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .page-title h1 { font-size: 1.5rem; font-weight: 600; }
+        .page-title p { color: #64748b; font-size: 0.85rem; margin-top: 5px; }
+        .logout-btn { background: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .stat-card h3 { font-size: 2rem; font-weight: 700; color: #c9a227; }
+        .content-card { background: white; border-radius: 16px; padding: 25px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #e2e8f0; }
+        .card-header h3 { font-size: 1.2rem; font-weight: 600; color: #0f2b3d; }
+        .btn-primary { background: #c9a227; color: #0f2b3d; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+        .btn-primary:hover { background: #b38f1f; }
+        .btn-warning, .btn-danger, .btn-info { border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+        .btn-warning { background: #f59e0b; color: white; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-info { background: #3b82f6; color: white; }
+        .action-buttons { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+        .table-responsive { overflow-x: auto; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; }
+        th { text-align: left; padding: 14px 12px; background: #f8fafc; font-weight: 600; border-bottom: 2px solid #e2e8f0; }
+        td { padding: 14px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; color: white; display: inline-block; }
+        .status-ativo { background: #22c55e; }
+        .status-inativo { background: #ef4444; }
+        .status-respondido { background: #22c55e; }
+        .status-pendente { background: #f59e0b; }
+        .tipo-badge { background: #3b82f6; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; color: white; display: inline-block; }
+        .copy-btn { background: #e2e8f0; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; }
+        .image-preview { margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 8px; text-align: center; }
+        .image-preview img { max-width: 100%; max-height: 150px; border-radius: 8px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; border-radius: 16px; width: 90%; max-width: 500px; }
+        .modal-header { padding: 20px; background: linear-gradient(135deg, #0f2b3d 0%, #1a3a4f 100%); color: white; border-radius: 16px 16px 0 0; display: flex; justify-content: space-between; }
+        .modal-header button { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+        .modal-body { padding: 20px; }
+        .modal-footer { padding: 20px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 500; }
+        .form-control { width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: inherit; }
+        .form-select { width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; background: white; }
+        textarea.form-control { min-height: 100px; resize: vertical; }
+        .upload-area { border: 2px dashed #c9a227; border-radius: 12px; padding: 20px; text-align: center; background: #fef9e6; cursor: pointer; margin-bottom: 15px; }
+        .preview-img { max-width: 100%; max-height: 100px; margin-top: 10px; border-radius: 8px; }
+        .loading { text-align: center; padding: 40px; color: #64748b; }
+        @media (max-width: 768px) { .sidebar { width: 70px; } .sidebar-header h2, .sidebar-header p, .nav-item span { display: none; } .main-content { margin-left: 70px; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header"><i class="fas fa-church"></i><h2>São Miguel</h2><p>Administração</p></div>
+        <div class="sidebar-nav">
+            <div class="nav-item active" data-section="dashboard"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></div>
+            <div class="nav-item" data-section="noticias"><i class="fas fa-newspaper"></i><span>Notícias</span></div>
+            <div class="nav-item" data-section="eventos"><i class="fas fa-calendar-alt"></i><span>Eventos</span></div>
+            <div class="nav-item" data-section="horarios"><i class="fas fa-clock"></i><span>Horários</span></div>
+            <div class="nav-item" data-section="pastorais"><i class="fas fa-hands-helping"></i><span>Pastorais</span></div>
+            <div class="nav-item" data-section="galeria"><i class="fas fa-images"></i><span>Galeria</span></div>
+            <div class="nav-item" data-section="mensagens"><i class="fas fa-envelope"></i><span>Mensagens</span></div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="top-bar"><div class="page-title"><h1 id="pageTitle">Dashboard</h1><p id="pageDesc">Visão geral do sistema</p></div><button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</button></div>
+        <div id="contentArea"></div>
+    </div>
+    <div id="modal" class="modal"><div class="modal-content"><div class="modal-header"><h3 id="modalTitle">Título</h3><button onclick="fecharModal()">&times;</button></div><div class="modal-body"><form id="modalForm"><div id="formFields"></div></form></div><div class="modal-footer"><button class="btn-primary" onclick="salvarItem()">Salvar</button><button onclick="fecharModal()">Cancelar</button></div></div></div>
+    <div id="viewModal" class="modal"><div class="modal-content"><div class="modal-header"><h3>Detalhes da Mensagem</h3><button onclick="fecharViewModal()">&times;</button></div><div class="modal-body" id="viewModalBody"></div><div class="modal-footer"><button class="btn-primary" id="viewResponderBtn">Marcar Respondido</button><button class="btn-danger" onclick="excluirView()">Excluir</button><button onclick="fecharViewModal()">Fechar</button></div></div></div>
+    <div id="uploadModal" class="modal"><div class="modal-content"><div class="modal-header"><h3>Adicionar Mídia</h3><button onclick="fecharUploadModal()">&times;</button></div><div class="modal-body"><div class="form-group"><label>Nome</label><input type="text" id="uploadTitulo" class="form-control"></div><div class="form-group"><div class="upload-area" onclick="document.getElementById('uploadFile').click()"><i class="fas fa-cloud-upload-alt"></i><p>Clique para selecionar arquivo</p><p style="font-size:0.7rem;">Formatos: JPG, PNG, MP4</p></div><input type="file" id="uploadFile" style="display:none;" accept="image/jpeg,image/png,video/mp4" onchange="previewFile()"><div id="previewContainer"></div></div></div><div class="modal-footer"><button class="btn-primary" onclick="uploadMidia()">Salvar</button><button onclick="fecharUploadModal()">Cancelar</button></div></div></div>
+    <script>
+        const token = localStorage.getItem('token');
+        let currentSection = 'dashboard';
+        let editingId = null;
+        let currentType = null;
+        let currentViewId = null;
+        let selectedFile = null;
+        let listaMidias = [];
+        if (!token) window.location.href = 'login.html';
+        const authHeaders = { 'Authorization': 'Bearer admin-token', 'Content-Type': 'application/json' };
+        const tipoLabels = { 'contato': '📧 Contato', 'intencao': '⛪ Intenção Missa', 'oracao': '🙏 Pedido Oração', 'informacao': 'ℹ️ Informação', 'sugestao': '💡 Sugestão' };
+        function formatarData(d) { const data = new Date(d); return `${data.getDate().toString().padStart(2,'0')}/${(data.getMonth()+1).toString().padStart(2,'0')}/${data.getFullYear()} ${data.getHours().toString().padStart(2,'0')}:${data.getMinutes().toString().padStart(2,'0')}`; }
+        function escapeHtml(t) { if (!t) return ''; const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+        function fecharModal() { document.getElementById('modal').style.display = 'none'; editingId = null; }
+        function logout() { localStorage.removeItem('token'); window.location.href = 'login.html'; }
+        function previewImagem(url) { if (!url) return ''; const isVideo = url.includes('.mp4') || url.includes('.mov'); if (isVideo) return `<div class="image-preview"><video controls style="max-width:100%; max-height:150px;"><source src="${url}"></video></div>`; return `<div class="image-preview"><img src="${url}" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\"color:red\">Imagem não encontrada</span>'"></div>`; }
+        async function carregarMidias() { try { const res = await fetch('http://localhost:8001/api/galeria'); listaMidias = await res.json(); return listaMidias; } catch(e) { console.error('Erro ao carregar mídias:', e); return []; } }
+        function gerarSelectMidias(selectedUrl) { if (listaMidias.length === 0) return `<div class="alert-info" style="padding:10px; background:#e6f7ff; border-radius:8px;">Nenhuma mídia na galeria. <a href="#" onclick="loadSection('galeria')">Adicione uma</a> primeiro.</div>`; let html = `<select class="form-select" id="imagemSelect" onchange="document.getElementById('imagemUrl').value=this.value; document.getElementById('previewMidia').innerHTML=previewImagem(this.value)"><option value="">-- Selecione uma imagem/vídeo da galeria --</option>`; listaMidias.forEach(m => { const isVideo = m.arquivo.includes('.mp4') || m.arquivo.includes('.mov'); const icon = isVideo ? '🎬' : '🖼️'; html += `<option value="${m.arquivo}" ${selectedUrl === m.arquivo ? 'selected' : ''}>${icon} ${escapeHtml(m.titulo)}</option>`; }); html += `</select>`; return html; }
+        async function loadSection(s) {
+            currentSection = s;
+            await carregarMidias();
+            const t = { dashboard:'Dashboard', noticias:'Notícias', eventos:'Eventos', horarios:'Horários', pastorais:'Pastorais', galeria:'Galeria', mensagens:'Mensagens' };
+            document.getElementById('pageTitle').innerText = t[s];
+            document.getElementById('pageDesc').innerText = 'Gerenciar conteúdo';
+            document.getElementById('contentArea').innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>';
+            if (s === 'dashboard') await loadDashboard();
+            else if (s === 'noticias') await loadList('noticias', ['#', 'Imagem', 'Título', 'Data']);
+            else if (s === 'eventos') await loadList('eventos', ['#', 'Imagem', 'Nome', 'Data', 'Local']);
+            else if (s === 'horarios') await loadHorarios();
+            else if (s === 'pastorais') await loadList('pastorais', ['#', 'Nome', 'Responsável', 'Contato']);
+            else if (s === 'galeria') await loadGaleria();
+            else if (s === 'mensagens') await loadMensagens();
+        }
+        async function loadDashboard() {
+            const n = await fetch('/api/noticias/').then(r=>r.json());
+            const e = await fetch('/api/eventos/').then(r=>r.json());
+            const p = await fetch('/api/pastorais/').then(r=>r.json());
+            const c = await fetch('/api/contatos/').then(r=>r.json());
+            document.getElementById('contentArea').innerHTML = `<div class="stats-grid"><div class="stat-card"><h3>${n.length}</h3><p>Notícias</p></div><div class="stat-card"><h3>${e.length}</h3><p>Eventos</p></div><div class="stat-card"><h3>${p.length}</h3><p>Pastorais</p></div><div class="stat-card"><h3>${c.length}</h3><p>Mensagens</p></div></div><div class="content-card"><h3>Bem-vindo ao Painel Administrativo</h3><p>Selecione uma opção no menu lateral.</p></div>`;
+        }
+        async function loadList(section, headers) {
+            try {
+                const res = await fetch(`/api/${section}/`);
+                const items = await res.json();
+                let html = `<div class="content-card"><div class="card-header"><h3><i class="fas ${section === 'noticias' ? 'fa-newspaper' : section === 'eventos' ? 'fa-calendar-alt' : 'fa-hands-helping'}" style="margin-right:8px; color:#c9a227;"></i> ${section.charAt(0).toUpperCase() + section.slice(1)}</h3><button class="btn-primary" onclick="abrirModal('${section}')"><i class="fas fa-plus"></i> Novo</button></div><div class="table-responsive"><table class="table"><thead> <th>${headers.join('</th><th>')}</th><th>Ações</th> </thead><tbody>`;
+                let contador = 1;
+                items.forEach(item => {
+                    html += `      <tr>`;
+                    if (section === 'noticias') {
+                        html += `<td style="width:60px;">${contador++}</td><td style="width:80px;">${item.imagem ? `<img src="${item.imagem}" style="width:60px; height:40px; object-fit:cover; border-radius:6px;">` : '<span style="color:#ccc;">Sem imagem</span>'}</td><td><strong>${escapeHtml(item.titulo)}</strong></td><td style="width:100px;">${new Date(item.data_publicacao).toLocaleDateString()}</td>`;
+                    } else if (section === 'eventos') {
+                        html += `<td style="width:60px;">${contador++}</td><td style="width:80px;">${item.imagem ? `<img src="${item.imagem}" style="width:60px; height:40px; object-fit:cover; border-radius:6px;">` : '<span style="color:#ccc;">Sem imagem</span>'}</td><td><strong>${escapeHtml(item.nome)}</strong></td><td style="width:100px;">${item.data ? new Date(item.data).toLocaleDateString() : '-'}</td><td>${escapeHtml(item.local || '-')}</td>`;
+                    } else if (section === 'pastorais') {
+                        html += `<td style="width:60px;">${contador++}</td><td><strong>${escapeHtml(item.nome)}</strong></td><td>${escapeHtml(item.responsavel || '-')}</td><td>${escapeHtml(item.contato || '-')}</td>`;
+                    }
+                    html += `<td class="action-buttons" style="width:130px;"><button class="btn-warning" onclick="editarItem('${section}', ${item.id})"><i class="fas fa-edit"></i> Editar</button><button class="btn-danger" onclick="excluirItem('${section}', ${item.id})"><i class="fas fa-trash"></i> Excluir</button></td></tr>`;
+                });
+                html += `</tbody></table></div></div>`;
+                document.getElementById('contentArea').innerHTML = html;
+            } catch(e) { document.getElementById('contentArea').innerHTML = `<div class="alert-error">Erro: ${e.message}</div>`; }
+        }
+        async function loadHorarios() {
+            try {
+                const res = await fetch('/api/admin/horarios', { headers: authHeaders });
+                const items = await res.json();
+                let html = `<div class="content-card"><div class="card-header"><h3><i class="fas fa-clock" style="margin-right:8px; color:#c9a227;"></i> Horários</h3><button class="btn-primary" onclick="abrirModal('horarios')"><i class="fas fa-plus"></i> Novo</button></div><div class="table-responsive"><table class="table"><thead> <th style="width:60px;">#</th><th>Dia</th><th>Horário</th><th>Tipo</th><th>Status</th><th style="width:130px;">Ações</th> </thead><tbody>`;
+                let contador = 1;
+                items.forEach(item => {
+                    html += `<tr>
+                        <td>${contador++}</td>
+                        <td><strong>${item.dia_semana}</strong></td>
+                        <td>${item.horario}</td>
+                        <td>${item.tipo}</td>
+                        <td><span class="status-badge ${item.ativo ? 'status-ativo' : 'status-inativo'}">${item.ativo ? 'Ativo' : 'Inativo'}</span></td>
+                        <td class="action-buttons"><button class="btn-warning" onclick="editarItem('horarios', ${item.id})"><i class="fas fa-edit"></i> Editar</button><button class="btn-danger" onclick="excluirItem('horarios', ${item.id})"><i class="fas fa-trash"></i> Excluir</button></td>
+                    </tr>`;
+                });
+                html += `</tbody></table></div></div>`;
+                document.getElementById('contentArea').innerHTML = html;
+            } catch(e) { document.getElementById('contentArea').innerHTML = `<div class="alert-error">Erro: ${e.message}</div>`; }
+        }
+        async function loadGaleria() {
+            try {
+                const res = await fetch('http://localhost:8001/api/galeria');
+                const items = await res.json();
+                let html = `<div class="content-card"><div class="card-header"><h3><i class="fas fa-images" style="margin-right:8px; color:#c9a227;"></i> Galeria</h3><button class="btn-primary" onclick="abrirUploadModal()"><i class="fas fa-upload"></i> Adicionar</button></div><div class="table-responsive"><table class="table"><thead> <th style="width:60px;">#</th><th>Nome</th><th>Arquivo</th><th style="width:100px;">Data</th><th style="width:130px;">Ações</th> </thead><tbody>`;
+                if (items.length === 0) {
+                    html += '<tr><td colspan="5" style="text-align:center;">Nenhuma mídia cadastrada.</td></tr>';
+                } else {
+                    let contador = 1;
+                    items.forEach(item => {
+                        html += `<tr>
+                            <td>${contador++}</td>
+                            <td><strong>${escapeHtml(item.titulo)}</strong><br><small>${escapeHtml(item.descricao || '')}</small></td>
+                            <td><code style="font-size:0.7rem;">${item.arquivo}</code><br><button class="copy-btn" onclick="copiarUrl('${item.arquivo}')">Copiar URL</button></td>
+                            <td>${new Date(item.createdAt).toLocaleDateString()}</td>
+                            <td class="action-buttons"><button class="btn-warning" onclick="editarMidia('${item._id}', '${escapeHtml(item.titulo)}')">Editar</button><button class="btn-danger" onclick="excluirMidia('${item._id}')">Excluir</button></td>
+                        </tr>`;
+                    });
+                }
+                html += `</tbody></table></div></div>`;
+                document.getElementById('contentArea').innerHTML = html;
+            } catch(e) { 
+                document.getElementById('contentArea').innerHTML = '<div class="alert-error">Erro ao carregar galeria</div>';
+            }
+        }
+        function abrirUploadModal() { document.getElementById('uploadModal').style.display = 'flex'; }
+        function fecharUploadModal() { document.getElementById('uploadModal').style.display = 'none'; }
+        function previewFile() { const file = document.getElementById('uploadFile').files[0]; if (!file) return; selectedFile = file; const reader = new FileReader(); reader.onload = function(e) { const preview = document.getElementById('previewContainer'); if (file.type.startsWith('video/')) { preview.innerHTML = `<video controls style="max-width:100%; max-height:100px;"><source src="${e.target.result}"></video>`; } else { preview.innerHTML = `<img src="${e.target.result}" class="preview-img">`; } }; reader.readAsDataURL(file); }
+        async function uploadMidia() { const titulo = document.getElementById('uploadTitulo').value; if (!titulo) { alert('Digite um nome'); return; } if (!selectedFile) { alert('Selecione um arquivo'); return; } const formData = new FormData(); formData.append('titulo', titulo); formData.append('descricao', document.getElementById('uploadDescricao')?.value || ''); formData.append('file', selectedFile); const response = await fetch('/api/admin/galeria', { method: 'POST', headers: { 'Authorization': 'Bearer admin-token' }, body: formData }); if (response.ok) { fecharUploadModal(); loadSection('galeria'); alert('Adicionado!'); } else { alert('Erro ao adicionar'); } }
+        async function editarMidia(id, titulo) { const novo = prompt('Novo nome:', titulo); if (novo) await fetch(`/api/admin/galeria/${id}`, { method: 'PUT', headers: authHeaders, body: JSON.stringify({ titulo: novo }) }); loadSection('galeria'); }
+        async function excluirMidia(id) { if (confirm('Excluir?')) await fetch(`/api/admin/galeria/${id}`, { method: 'DELETE', headers: authHeaders }); loadSection('galeria'); }
+        function copiarUrl(url) { navigator.clipboard.writeText(url); alert('URL copiada: ' + url); }
+        async function loadMensagens() {
+            try {
+                const res = await fetch('/api/contatos/');
+                const items = await res.json();
+                let html = `<div class="content-card"><div class="card-header"><h3><i class="fas fa-envelope" style="margin-right:8px; color:#c9a227;"></i> Mensagens</h3></div><div class="table-responsive"><table class="table"><thead> <th style="width:150px;">Data</th><th>Tipo</th><th>Nome</th><th>Email</th><th>Status</th><th style="width:130px;">Ações</th> </thead><tbody>`;
+                items.forEach(item => {
+                    html += `<tr>
+                        <td>${formatarData(item.created_at)}</td>
+                        <td><span class="tipo-badge">${tipoLabels[item.tipo] || '📧 Contato'}</span></td>
+                        <td><strong>${escapeHtml(item.nome)}</strong></td>
+                        <td>${escapeHtml(item.email)}</td>
+                        <td><span class="status-badge ${item.respondido ? 'status-respondido' : 'status-pendente'}">${item.respondido ? 'Respondido' : 'Pendente'}</span></td>
+                        <td class="action-buttons"><button class="btn-info" onclick="verMensagem(${item.id}, '${escapeHtml(item.nome)}', '${escapeHtml(item.email)}', '${escapeHtml(item.telefone || '')}', '${escapeHtml(item.mensagem)}', '${item.tipo || 'contato'}', ${item.respondido})">Ver</button><button class="btn-danger" onclick="excluirMensagem(${item.id})">Excluir</button></td>
+                    </tr>`;
+                });
+                html += `</tbody></table></div></div>`;
+                document.getElementById('contentArea').innerHTML = html;
+            } catch(e) { document.getElementById('contentArea').innerHTML = `<div class="alert-error">Erro: ${e.message}</div>`; }
+        }
+        function verMensagem(id, nome, email, telefone, mensagem, tipo, respondido) {
+            currentViewId = id;
+            document.getElementById('viewModalBody').innerHTML = `<div><strong>Nome:</strong> ${nome}</div><div><strong>Email:</strong> ${email}</div><div><strong>Telefone:</strong> ${telefone || 'Não informado'}</div><div><strong>Tipo:</strong> ${tipoLabels[tipo] || 'Contato'}</div><div><strong>Status:</strong> ${respondido ? 'Respondido' : 'Pendente'}</div><div style="margin-top:10px;"><strong>Mensagem:</strong><div style="background:#f8f9fa; padding:12px;">${mensagem}</div></div>`;
+            const btn = document.getElementById('viewResponderBtn');
+            if (respondido) btn.disabled = true;
+            else btn.onclick = () => marcarRespondido(id);
+            document.getElementById('viewModal').style.display = 'flex';
+        }
+        async function marcarRespondido(id) { await fetch(`/api/admin/contatos/${id}/responder`, { method: 'PUT', headers: authHeaders }); fecharViewModal(); loadSection('mensagens'); }
+        async function excluirMensagem(id) { if (confirm('Excluir?')) await fetch(`/api/admin/contatos/${id}`, { method: 'DELETE', headers: authHeaders }); loadSection('mensagens'); }
+        function excluirView() { if (currentViewId) excluirMensagem(currentViewId); }
+        function fecharViewModal() { document.getElementById('viewModal').style.display = 'none'; }
+        function abrirModal(tipo, item = null) {
+            currentType = tipo; editingId = item?.id || null;
+            document.getElementById('modalTitle').innerText = editingId ? `Editar ${tipo}` : `Novo ${tipo}`;
+            let fields = '';
+            if (tipo === 'noticias') {
+                fields = `<div class="form-group"><label>Título</label><input type="text" class="form-control" id="titulo" value="${escapeHtml(item?.titulo || '')}"></div>
+                         <div class="form-group"><label>Conteúdo</label><textarea class="form-control" id="conteudo">${escapeHtml(item?.conteudo || '')}</textarea></div>
+                         <div class="form-group"><label>Imagem da Galeria</label>
+                         ${gerarSelectMidias(item?.imagem || '')}
+                         <input type="hidden" id="imagemUrl" value="${escapeHtml(item?.imagem || '')}">
+                         <div id="previewMidia">${item?.imagem ? previewImagem(item.imagem) : ''}</div>
+                         </div>`;
+            } else if (tipo === 'eventos') {
+                fields = `<div class="form-group"><label>Nome</label><input type="text" class="form-control" id="nome" value="${escapeHtml(item?.nome || '')}"></div>
+                         <div class="form-group"><label>Descrição</label><textarea class="form-control" id="descricao">${escapeHtml(item?.descricao || '')}</textarea></div>
+                         <div class="form-group"><label>Data</label><input type="datetime-local" class="form-control" id="data" value="${item?.data ? item.data.slice(0,16) : ''}"></div>
+                         <div class="form-group"><label>Local</label><input type="text" class="form-control" id="local" value="${escapeHtml(item?.local || '')}"></div>
+                         <div class="form-group"><label>Imagem da Galeria</label>
+                         ${gerarSelectMidias(item?.imagem || '')}
+                         <input type="hidden" id="imagemUrl" value="${escapeHtml(item?.imagem || '')}">
+                         <div id="previewMidia">${item?.imagem ? previewImagem(item.imagem) : ''}</div>
+                         </div>`;
+            } else if (tipo === 'horarios') {
+                fields = `<div class="form-group"><label>Dia</label><select class="form-control" id="diaSemana"><option>Domingo</option><option>Segunda</option><option>Terça</option><option>Quarta</option><option>Quinta</option><option>Sexta</option><option>Sábado</option></select></div>
+                         <div class="form-group"><label>Horário</label><input type="text" class="form-control" id="horario" value="${item?.horario || ''}"></div>
+                         <div class="form-group"><label>Tipo</label><select class="form-control" id="tipo"><option>Missa</option><option>Confissões</option><option>Adoração</option><option>Terço</option></select></div>
+                         <div class="form-group"><label>Ativo</label><select class="form-control" id="ativo"><option value="true">Sim</option><option value="false">Não</option></select></div>`;
+            } else if (tipo === 'pastorais') {
+                fields = `<div class="form-group"><label>Nome</label><input type="text" class="form-control" id="nome" value="${escapeHtml(item?.nome || '')}"></div>
+                         <div class="form-group"><label>Descrição</label><textarea class="form-control" id="descricao">${escapeHtml(item?.descricao || '')}</textarea></div>
+                         <div class="form-group"><label>Responsável</label><input type="text" class="form-control" id="responsavel" value="${escapeHtml(item?.responsavel || '')}"></div>
+                         <div class="form-group"><label>Contato</label><input type="text" class="form-control" id="contato" value="${escapeHtml(item?.contato || '')}"></div>`;
+            }
+            document.getElementById('formFields').innerHTML = fields;
+            document.getElementById('modal').style.display = 'flex';
+            setTimeout(() => { const select = document.getElementById('imagemSelect'); if(select) select.addEventListener('change', function() { const url = this.value; document.getElementById('imagemUrl').value = url; document.getElementById('previewMidia').innerHTML = previewImagem(url); }); }, 100);
+        }
+        async function salvarItem() {
+            const tipo = currentType, url = editingId ? `/api/admin/${tipo}/${editingId}` : `/api/admin/${tipo}`, method = editingId ? 'PUT' : 'POST';
+            let body = {};
+            if (tipo === 'noticias') body = { titulo: document.getElementById('titulo').value, conteudo: document.getElementById('conteudo').value, imagem: document.getElementById('imagemUrl')?.value || '' };
+            else if (tipo === 'eventos') body = { nome: document.getElementById('nome').value, descricao: document.getElementById('descricao').value, data: document.getElementById('data').value, local: document.getElementById('local').value, imagem: document.getElementById('imagemUrl')?.value || '' };
+            else if (tipo === 'horarios') body = { diaSemana: document.getElementById('diaSemana').value, horario: document.getElementById('horario').value, tipo: document.getElementById('tipo').value, ativo: document.getElementById('ativo').value === 'true' };
+            else if (tipo === 'pastorais') body = { nome: document.getElementById('nome').value, descricao: document.getElementById('descricao').value, responsavel: document.getElementById('responsavel').value, contato: document.getElementById('contato').value };
+            const res = await fetch(url, { method, headers: authHeaders, body: JSON.stringify(body) });
+            if (res.ok) { fecharModal(); loadSection(currentSection); }
+            else alert('Erro ao salvar');
+        }
+        async function editarItem(tipo, id) { const res = await fetch(tipo === 'horarios' ? `/api/horarios/${id}` : `/api/${tipo}/${id}`); const item = await res.json(); abrirModal(tipo, item); }
+        async function excluirItem(tipo, id) { if (confirm('Excluir?')) await fetch(`/api/admin/${tipo}/${id}`, { method: 'DELETE', headers: authHeaders }); loadSection(currentSection); }
+        document.querySelectorAll('.nav-item').forEach(item => { item.addEventListener('click', () => { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); item.classList.add('active'); loadSection(item.dataset.section); }); });
+        loadSection('dashboard');
+    </script>
+</body>
+</html>

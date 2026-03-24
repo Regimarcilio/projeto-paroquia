@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre - Paróquia São Miguel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="top-bar"><div class="container"><div><i class="fas fa-map-marker-alt"></i> Rua da Fé, 123 - Centro</div><div><i class="fas fa-phone-alt"></i> (11) 9999-9999</div></div></div>
+        <div class="container"><nav class="nav-main"><a href="/" class="logo"><div class="logo-icon"><i class="fas fa-shield-alt"></i></div><div class="logo-text"><h1>São Miguel Arcanjo</h1><span>Paróquia Católica</span></div></a><ul class="nav-menu"><li><a href="/">Início</a></li><li><a href="/pages/sobre.html">A Paróquia</a></li><li><a href="/pages/horarios.html">Horários</a></li><li><a href="/pages/pastorais.html">Pastorais</a></li><li><a href="/pages/eventos.html">Eventos</a></li><li><a href="/pages/noticias.html">Notícias</a></li><li><a href="/pages/contato.html">Contato</a></li><li><a href="/pages/admin/login.html" class="btn-donate">Admin</a></li></ul></nav></div>
+    </header>
+
+    <section class="page-header"><div class="container"><h1>Sobre a Paróquia</h1><p>Conheça nossa história e missão</p></div></section>
+
+    <div class="container py-5">
+        <div id="sobre-container"></div>
+    </div>
+
+    <footer class="footer"><div class="container"><div class="copyright">&copy; 2025 Paróquia São Miguel Arcanjo</div></div></footer>
+
+    <script>
+        fetch('/api/sobre/').then(r=>r.json()).then(data => {
+            document.getElementById('sobre-container').innerHTML = `
+                <div class="card"><h3><i class="fas fa-history"></i> Nossa História</h3><p>${data.historia || 'Em breve...'}</p></div>
+                <div class="card"><h3><i class="fas fa-cross"></i> Missão</h3><p>${data.missao || 'Em breve...'}</p></div>
+                <div class="card"><h3><i class="fas fa-eye"></i> Visão</h3><p>${data.visao || 'Em breve...'}</p></div>
+                <div class="card"><h3><i class="fas fa-heart"></i> Valores</h3><p>${data.valores || 'Em breve...'}</p></div>
+            `;
+        });
+    </script>
+    <style>.card{background:white;padding:30px;border-radius:12px;margin-bottom:30px;box-shadow:0 2px 10px rgba(0,0,0,0.05)}.card h3{color:var(--primary-color);margin-bottom:15px}.py-5{padding:80px 0}</style>
+</body>
+</html>
