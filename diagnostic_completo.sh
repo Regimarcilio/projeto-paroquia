@@ -5,7 +5,7 @@ echo "1. Containers rodando:"
 docker ps -a
 echo ""
 echo "2. Portas abertas:"
-netstat -tlnp 2>/dev/null | grep -E ":(80|8000|5432)" || echo "Nenhuma porta encontrada"
+netstat -tlnp 2>/dev/null | grep -E ":(80|8002|5432)" || echo "Nenhuma porta encontrada"
 echo ""
 echo "3. Arquivos frontend:"
 ls -la frontend/ | head -20

@@ -9,6 +9,6 @@ COPY . .
 
 RUN mkdir -p /app/data /app/uploads/noticias /app/uploads/galeria
 
-EXPOSE 8000
+EXPOSE 8002
 
 CMD ["npm", "start"]

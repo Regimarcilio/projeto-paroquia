@@ -3,19 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doações - Paróquia São Miguel</title>
+    <title>Pastorais - Paróquia São Miguel</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <header class="header"><div class="container"><nav class="nav-main"><a href="/" class="logo"><div class="logo-icon"><i class="fas fa-shield-alt"></i></div><div class="logo-text"><h1>São Miguel Arcanjo</h1><span>Paróquia Católica</span></div></a><ul class="nav-menu"><li><a href="/">Início</a></li><li><a href="/pages/sobre.html">A Paróquia</a></li><li><a href="/pages/horarios.html">Horários</a></li><li><a href="/pages/pastorais.html">Pastorais</a></li><li><a href="/pages/noticias.html">Notícias</a></li><li><a href="/pages/contato.html">Contato</a></li><li><a href="/pages/admin/login.html" class="btn-donate">Admin</a></li></ul></nav></div></header>
+    <header class="header">
+        <div class="top-bar">
+            <div class="container">
+                <div><i class="fas fa-map-marker-alt"></i> <span id="config-endereco">Carregando...</span></div>
+                <div><i class="fas fa-phone-alt"></i> <span id="config-telefone">Carregando...</span></div>
+            </div>
+        </div>
+        <div class="container">
+            <nav class="nav-main">
+                <a href="/" class="logo">
+                    <div class="logo-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="logo-text">
+                        <h1>São Miguel Arcanjo</h1>
+                        <span>Paróquia Católica</span>
+                    </div>
+                </a>
+                <ul class="nav-menu">
+                    <li><a href="/pages/apresentacao.html" class="active">Home</a></li>
+                    <li><a href="/pages/sobre.html">A Paróquia</a></li>
+                    <li><a href="/pages/horarios.html">Horários</a></li>
+                    <li><a href="/pages/pastorais.html">Pastorais</a></li>
+                    <li><a href="/pages/eventos.html">Eventos</a></li>
+                    <li><a href="/pages/noticias.html">Notícias</a></li>
+                    <li><a href="/pages/contato.html">Contato</a></li>
+                    <li><a href="/pages/admin/login.html" class="btn-donate">Admin</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-    <section class="page-header"><div class="container"><h1>Doações</h1><p>Contribua com a nossa paróquia</p></div></section>
+    <section class="page-header">
+        <div class="container">
+            <h1>Doações</h1>
+            <p>Contribua com a nossa paróquia</p>
+        </div>
+    </section>
+    <div class="container py-5">
+        <div class="dizimo-card">
+            <div class="dizimo-texto">
+                <i class="fas fa-hand-holding-heart dizimo-icon"></i>
+                <h2>Contribua com o Dízimo</h2>
+                <p>"Cada um contribua segundo tiver proposto no coração, não com tristeza ou por necessidade; porque Deus ama a quem dá com alegria."</p>
+                <p class="dizimo-ref">2 Coríntios 9,7</p>
+                <div class="dizimo-buttons">
+                    <a href="/pages/doacoes.html" class="btn-dizimo">Quero ser dizimista</a>
+                    <a href="/pages/sobre.html" class="btn-dizimo-outline">Saiba mais</a>
+                </div>
+            </div>
+            <div class="dizimo-qrcode">
+                <div class="qrcode-box">
+                    <i class="fas fa-qrcode qrcode-icon"></i>
+                    <h3>PIX</h3>
+                    <p><strong>Chave PIX (CNPJ)</strong></p>
+                    <code class="pix-key">12.345.678/0001-90</code>
+                    <button class="btn-copiar" onclick="copiarPix()">Copiar chave</button>
+                    <div class="transferencia-info">
+                        <hr>
+                        <h4>Transferência Bancária</h4>
+                        <p>Banco do Brasil<br>Agência: 1234-5<br>Conta: 12345-6</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <div class="container py-5"><div class="card text-center"><i class="fas fa-qrcode" style="font-size:4rem;color:var(--secondary-color)"></i><h3>PIX</h3><p><strong>Chave PIX (CNPJ):</strong><br><code>12.345.678/0001-90</code></p><hr><h3>Transferência Bancária</h3><p>Banco do Brasil<br>Agência: 1234-5<br>Conta: 12345-6</p><a href="#" class="btn-donate">Dízimo Online</a></div></div>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3 class="footer-title"><span id="config-padroeiro">Carregando...</span></h3>
+                    <p><span id="config-endereco-footer">Carregando...</span></p>
+                    <p><i class="fas fa-phone"></i> <span id="config-telefone-footer">Carregando...</span></p>
+                    <p><i class="fas fa-envelope"></i> <span id="config-email-footer">Carregando...</span></p>
+                </div>
+                <div class="footer-links">
+                    <h3 class="footer-title">Links Rápidos</h3>
+                    <ul>
+                        <li><a href="/pages/sobre.html">A Paróquia</a></li>
+                        <li><a href="/pages/horarios.html">Horários</a></li>
+                        <li><a href="/pages/contato.html">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3 class="footer-title">Redes Sociais</h3>
+                    <ul>
+                        <li><a href="https://www.instagram.com/paroquiasaomiguel__/" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i> Instagram</a></li>
+                        <li><a href="https://www.facebook.com/matrizsaomiguel/"><i class="fab fa-facebook"></i> Facebook</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 Paróquia São Miguel Arcanjo. Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
 
-    <footer class="footer"><div class="container"><div class="copyright">&copy; 2025 Paróquia São Miguel Arcanjo</div></div></footer>
-    <style>.card{background:white;padding:40px;border-radius:12px;max-width:500px;margin:0 auto}.py-5{padding:80px 0}</style>
+
+     <script src="/js/config.js"></script>
+
+    <style> 
+
+        .dizimo-card {
+        display: flex;
+        flex-wrap: wrap;
+        background: linear-gradient(135deg, #0f2b3d 0%, #1a3a4f 100%);
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        margin: 30px 0;
+    }
+    .dizimo-texto {
+        flex: 1.2;
+        padding: 35px 35px;
+        color: white;
+    }
+    .dizimo-icon {
+        font-size: 2.2rem;
+        color: #c9a227;
+        margin-bottom: 12px;
+    }
+    .dizimo-texto h2 {
+        font-family: 'Cinzel', serif;
+        font-size: 1.6rem;
+        margin-bottom: 12px;
+        color: #c9a227;
+    }
+    .dizimo-texto p {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 12px;
+        opacity: 0.9;
+    }
+    .dizimo-ref {
+        font-style: italic;
+        color: #c9a227;
+        margin-bottom: 20px;
+        font-size: 0.85rem;
+    }
+    .dizimo-buttons {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .btn-dizimo {
+        background: #c9a227;
+        color: #0f2b3d;
+        padding: 8px 22px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s;
+        display: inline-block;
+    }
+    .btn-dizimo:hover {
+        background: #b38f1f;
+        transform: translateY(-2px);
+    }
+    .btn-dizimo-outline {
+        border: 2px solid #c9a227;
+        color: #c9a227;
+        padding: 8px 22px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s;
+        display: inline-block;
+    }
+    .btn-dizimo-outline:hover {
+        background: #c9a227;
+        color: #0f2b3d;
+        transform: translateY(-2px);
+    }
+    .dizimo-qrcode {
+        flex: 0.7;
+        background: white;
+        padding: 25px 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .qrcode-box {
+        text-align: center;
+        width: 100%;
+    }
+    .qrcode-icon {
+        font-size: 3.5rem;
+        color: #0f2b3d;
+        margin-bottom: 8px;
+    }
+    .qrcode-box h3 {
+        font-size: 1.2rem;
+        color: #0f2b3d;
+        margin-bottom: 8px;
+    }
+    .pix-key {
+        background: #f1f5f9;
+        padding: 8px 12px;
+        border-radius: 6px;
+        display: inline-block;
+        margin: 8px 0;
+        font-size: 0.75rem;
+        word-break: break-all;
+        font-family: monospace;
+    }
+    .btn-copiar {
+        background: #c9a227;
+        color: #0f2b3d;
+        border: none;
+        padding: 6px 16px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.75rem;
+        margin: 6px 0;
+        transition: all 0.3s;
+    }
+    .btn-copiar:hover {
+        background: #b38f1f;
+    }
+    .transferencia-info {
+        margin-top: 12px;
+        padding-top: 10px;
+    }
+    .transferencia-info hr {
+        border-color: #e2e8f0;
+        margin-bottom: 10px;
+    }
+    .transferencia-info h4 {
+        color: #0f2b3d;
+        margin-bottom: 6px;
+        font-size: 0.9rem;
+    }
+    .transferencia-info p {
+        color: #4a5568;
+        font-size: 0.75rem;
+        line-height: 1.3;
+        margin: 0;
+    }
+    @media (max-width: 768px) {
+        .dizimo-card { flex-direction: column; }
+        .dizimo-texto { padding: 25px; }
+        .dizimo-qrcode { padding: 25px; }
+        .dizimo-texto h2 { font-size: 1.3rem; }
+        .dizimo-texto p { font-size: 0.85rem; }
+    }
+
+    </style>
+    <script>
+    function copiarPix() {
+    // Tenta encontrar a chave PIX de várias formas
+    let pixKey = document.querySelector('.pix-key')?.innerText;
+    
+    // Se não encontrar pelo seletor, tenta pelo texto
+    if (!pixKey) {
+        const pixElement = document.querySelector('.qrcode-box code');
+        if (pixElement) pixKey = pixElement.innerText;
+    }
+    
+    // Se ainda não encontrou, busca pelo texto
+    if (!pixKey) {
+        const divs = document.querySelectorAll('.qrcode-box p, .qrcode-box code');
+        for (let el of divs) {
+            if (el.innerText.includes('.') && el.innerText.includes('/')) {
+                pixKey = el.innerText.trim();
+                break;
+            }
+        }
+    }
+    
+    if (pixKey) {
+        navigator.clipboard.writeText(pixKey);
+        alert('✅ Chave PIX copiada: ' + pixKey);
+    } else {
+        alert('❌ Chave PIX não encontrada. Chave padrão: 12.345.678/0001-90');
+        // Fallback
+        navigator.clipboard.writeText('12.345.678/0001-90');
+        alert('✅ Chave PIX padrão copiada!');
+    }
+}
+</script>
 </body>
 </html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paróquia São Miguel Arcanjo - Apresentação</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="top-bar">
+            <div class="container">
+                <div><i class="fas fa-map-marker-alt"></i> <span id="config-endereco">Carregando...</span></div>
+                <div><i class="fas fa-phone-alt"></i> <span id="config-telefone">Carregando...</span></div>
+            </div>
+        </div>
+        <div class="container">
+            <nav class="nav-main">
+                <a href="/pages/apresentacao.html" class="logo">
+                    <div class="logo-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="logo-text">
+                        <h1>São Miguel Arcanjo</h1>
+                        <span>Paróquia Católica</span>
+                    </div>
+                </a>
+                <ul class="nav-menu">
+                    <li><a href="/pages/apresentacao.html" class="active">Home</a></li>
+                    <li><a href="/pages/sobre.html">A Paróquia</a></li>
+                    <li><a href="/pages/horarios.html">Horários</a></li>
+                    <li><a href="/pages/pastorais.html">Pastorais</a></li>
+                    <li><a href="/pages/eventos.html">Eventos</a></li>
+                    <li><a href="/pages/noticias.html">Notícias</a></li>
+                    <li><a href="/pages/contato.html">Contato</a></li>
+                    <li><a href="/pages/admin/login.html" class="btn-donate">Admin</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <span class="hero-subtitle">Bem-vindos</span>
+            <h1 class="hero-title">Paróquia São Miguel Arcanjo</h1>
+            <p class="hero-desc">"Quem como Deus?"<br>Junte-se à nossa comunidade em oração e fé.</p>
+            <a href="/pages/horarios.html" class="btn-donate">Ver Horários</a>
+        </div>
+    </section>
+
+    <div class="container">
+    <div class="dizimo-banner">
+        <div class="dizimo-content">
+            <i class="fas fa-hand-holding-heart dizimo-icon"></i>
+            <h2>Seja um Dizimista</h2>
+            <p>"Cada um contribua segundo tiver proposto no coração, não com tristeza ou por necessidade; porque Deus ama a quem dá com alegria."</p>
+            <p class="dizimo-ref">2 Coríntios 9,7</p>
+            <div class="dizimo-buttons">
+                <a href="/pages/doacoes.html" class="btn-dizimo">Quero ser dizimista</a>
+                <a href="/pages/sobre.html" class="btn-dizimo-outline">Saiba mais</a>
+            </div>
+        </div>
+    </div>
+
+
+    <section class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Últimas Notícias</h2>
+            </div>
+            <div id="noticias-container" class="grid-4"></div>
+            <div class="text-center" style="margin-top: 30px;">
+                <a href="/pages/noticias.html" class="btn-donate">Ver Todas as Notícias</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section bg-gray">
+        <div class="container">
+            <div class="section-title">
+                <h2>Nossas Pastorais</h2>
+            </div>
+            <div id="pastorais-container" class="grid-4"></div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3 class="footer-title"><span id="config-padroeiro">Carregando...</span></h3>
+                    <p><span id="config-endereco-footer">Carregando...</span></p>
+                    <p><i class="fas fa-phone"></i> <span id="config-telefone-footer">Carregando...</span></p>
+                    <p><i class="fas fa-envelope"></i> <span id="config-email-footer">Carregando...</span></p>
+                </div>
+                <div class="footer-links">
+                    <h3 class="footer-title">Links Rápidos</h3>
+                    <ul>
+                        <li><a href="/pages/sobre.html">A Paróquia</a></li>
+                        <li><a href="/pages/horarios.html">Horários</a></li>
+                        <li><a href="/pages/contato.html">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3 class="footer-title">Pastorais</h3>
+                    <ul>
+                        <li><a href="/pages/pastorais.html">Catequese</a></li>
+                        <li><a href="/pages/pastorais.html">Grupo de Jovens</a></li>
+                        <li><a href="/pages/pastorais.html">Liturgia</a></li>
+                        <li><a href="/pages/pastorais.html">Dízimo</a></li>
+                    </ul>
+                </div>
+             </div>
+            <div class="copyright">
+                &copy; 2025 Paróquia São Miguel Arcanjo. Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/config.js"></script>
+    <script>
+        function carregarNoticias() {
+            fetch('/api/noticias/')
+                .then(res => res.json())
+                .then(noticias => {
+                    let html = '';
+                    noticias.slice(0, 4).forEach(n => {
+                        const temImagem = n.imagem && n.imagem.trim() !== '';
+                        let imagemUrl = n.imagem || '';
+                        if (temImagem && imagemUrl.startsWith('/uploads/')) {
+                            imagemUrl = 'http://localhost:8002' + imagemUrl;
+                        }
+                        html += `<div class="card-minimal" style="border-radius:12px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+                            ${temImagem ? 
+                                `<img src="${imagemUrl}" style="width:100%; height:150px; object-fit:cover;" onerror="this.style.display='none'">` : 
+                                `<div style="height:150px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+                                    <i class="fas fa-newspaper" style="font-size:36px; color:#ccc;"></i>
+                                </div>`
+                            }
+                            <div style="padding:15px;">
+                                <i class="fas fa-newspaper card-icon"></i>
+                                <h4>${n.titulo}</h4>
+                                <p>${n.conteudo ? n.conteudo.substring(0, 100) : ''}...</p>
+                                <a href="/pages/noticias.html">Leia mais →</a>
+                            </div>
+                        </div>`;
+                    });
+                    document.getElementById('noticias-container').innerHTML = html || '<p>Nenhuma notícia cadastrada.</p>';
+                });
+        }
+
+        function carregarPastorais() {
+            fetch('/api/pastorais/')
+                .then(res => res.json())
+                .then(pastorais => {
+                    let html = '';
+                    pastorais.slice(0, 4).forEach(p => {
+                        html += `<div class="card-minimal"><i class="fas fa-hands-helping card-icon"></i><h4>${p.nome}</h4><p>${p.descricao ? p.descricao.substring(0, 80) : ''}...</p></div>`;
+                    });
+                    document.getElementById('pastorais-container').innerHTML = html || '<p>Nenhuma pastoral cadastrada.</p>';
+                });
+        }
+
+        function carregarHorarios() {
+            fetch('/api/horarios/agrupados')
+                .then(res => res.json())
+                .then(data => {
+                    if(data.Domingo) document.getElementById('domingo-missas').innerText = data.Domingo.map(h => h.horario).join(' | ');
+                    let semana = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
+                    let horarios = [];
+                    semana.forEach(d => {
+                        if(data[d]) data[d].forEach(h => { if(h.tipo === 'Missa') horarios.push(h.horario); });
+                    });
+                    if(horarios.length) document.getElementById('semana-missas').innerText = [...new Set(horarios)].join(' | ');
+                    if(data.Sábado) {
+                        let conf = data.Sábado.find(h => h.tipo === 'Confissões');
+                        if(conf) document.getElementById('confissoes').innerText = conf.horario;
+                    }
+                });
+        }
+
+        carregarNoticias();
+        carregarPastorais();
+        carregarHorarios();
+    </script>
+    <style> 
+
+        .dizimo-banner {
+    background: linear-gradient(135deg, #0f2b3d 0%, #1a3a4f 100%);
+    border-radius: 24px;
+    padding: 50px 30px;
+    margin: 40px 0;
+    text-align: center;
+    color: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+.dizimo-icon {
+    font-size: 3rem;
+    color: #c9a227;
+    margin-bottom: 20px;
+}
+.dizimo-content h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 2rem;
+    margin-bottom: 15px;
+    color: #c9a227;
+}
+.dizimo-content p {
+    font-size: 1.1rem;
+    max-width: 700px;
+    margin: 0 auto 15px;
+    line-height: 1.5;
+}
+.dizimo-ref {
+    font-style: italic;
+    color: #c9a227;
+    margin-bottom: 25px;
+}
+.dizimo-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.btn-dizimo {
+    background: #c9a227;
+    color: #0f2b3d;
+    padding: 12px 30px;
+    border-radius: 40px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: inline-block;
+}
+.btn-dizimo:hover {
+    background: #b38f1f;
+    transform: translateY(-2px);
+}
+.btn-dizimo-outline {
+    border: 2px solid #c9a227;
+    color: #c9a227;
+    padding: 12px 30px;
+    border-radius: 40px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: inline-block;
+}
+.btn-dizimo-outline:hover {
+    background: #c9a227;
+    color: #0f2b3d;
+    transform: translateY(-2px);
+}
+@media (max-width: 768px) {
+    .dizimo-banner { padding: 30px 20px; }
+    .dizimo-content h2 { font-size: 1.5rem; }
+    .dizimo-content p { font-size: 1rem; }
+    .dizimo-buttons { gap: 15px; }
+    .btn-dizimo, .btn-dizimo-outline { padding: 10px 20px; font-size: 0.9rem; }
+}
+
+    </style>
+</body>
+</html>

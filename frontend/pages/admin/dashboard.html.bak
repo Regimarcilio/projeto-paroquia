@@ -84,7 +84,41 @@
     </div>
     <div id="modal" class="modal"><div class="modal-content"><div class="modal-header"><h3 id="modalTitle">Título</h3><button onclick="fecharModal()">&times;</button></div><div class="modal-body"><form id="modalForm"><div id="formFields"></div></form></div><div class="modal-footer"><button class="btn-primary" onclick="salvarItem()">Salvar</button><button onclick="fecharModal()">Cancelar</button></div></div></div>
     <div id="viewModal" class="modal"><div class="modal-content"><div class="modal-header"><h3>Detalhes da Mensagem</h3><button onclick="fecharViewModal()">&times;</button></div><div class="modal-body" id="viewModalBody"></div><div class="modal-footer"><button class="btn-primary" id="viewResponderBtn">Marcar Respondido</button><button class="btn-danger" onclick="excluirView()">Excluir</button><button onclick="fecharViewModal()">Fechar</button></div></div></div>
-    <div id="uploadModal" class="modal"><div class="modal-content"><div class="modal-header"><h3>Adicionar Mídia</h3><button onclick="fecharUploadModal()">&times;</button></div><div class="modal-body"><div class="form-group"><label>Nome</label><input type="text" id="uploadTitulo" class="form-control"></div><div class="form-group"><div class="upload-area" onclick="document.getElementById('uploadFile').click()"><i class="fas fa-cloud-upload-alt"></i><p>Clique para selecionar arquivo</p><p style="font-size:0.7rem;">Formatos: JPG, PNG, MP4</p></div><input type="file" id="uploadFile" style="display:none;" accept="image/jpeg,image/png,video/mp4" onchange="previewFile()"><div id="previewContainer"></div></div></div><div class="modal-footer"><button class="btn-primary" onclick="uploadMidia()">Salvar</button><button onclick="fecharUploadModal()">Cancelar</button></div></div></div>
+    
+    <!-- MODAL DE UPLOAD COM LINK DO NEXTCLOUD -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Adicionar Mídia</h3>
+                <button onclick="fecharUploadModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nome da Mídia *</label>
+                    <input type="text" id="uploadTitulo" class="form-control" placeholder="Ex: Missa de Páscoa">
+                </div>
+                <div class="form-group">
+                    <label>Link do Nextcloud</label>
+                    <input type="text" id="uploadLink" class="form-control" placeholder="https://nextcloud.com/s/.../imagem.jpg">
+                    <small style="color:#666; display:block; margin-top:5px;">Cole o link público do Nextcloud</small>
+                </div>
+                <div class="form-group">
+                    <div class="upload-area" onclick="document.getElementById('uploadFile').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Ou clique para selecionar arquivo local</p>
+                        <p style="font-size:0.7rem;">Formatos: JPG, PNG, MP4 (até 50MB)</p>
+                    </div>
+                    <input type="file" id="uploadFile" style="display:none;" accept="image/jpeg,image/png,video/mp4" onchange="previewFile()">
+                    <div id="previewContainer"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" onclick="uploadMidia()">Salvar</button>
+                <button onclick="fecharUploadModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const token = localStorage.getItem('token');
         let currentSection = 'dashboard';
@@ -96,13 +130,61 @@
         if (!token) window.location.href = 'login.html';
         const authHeaders = { 'Authorization': 'Bearer admin-token', 'Content-Type': 'application/json' };
         const tipoLabels = { 'contato': '📧 Contato', 'intencao': '⛪ Intenção Missa', 'oracao': '🙏 Pedido Oração', 'informacao': 'ℹ️ Informação', 'sugestao': '💡 Sugestão' };
+        
         function formatarData(d) { const data = new Date(d); return `${data.getDate().toString().padStart(2,'0')}/${(data.getMonth()+1).toString().padStart(2,'0')}/${data.getFullYear()} ${data.getHours().toString().padStart(2,'0')}:${data.getMinutes().toString().padStart(2,'0')}`; }
         function escapeHtml(t) { if (!t) return ''; const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
         function fecharModal() { document.getElementById('modal').style.display = 'none'; editingId = null; }
         function logout() { localStorage.removeItem('token'); window.location.href = 'login.html'; }
-        function previewImagem(url) { if (!url) return ''; const isVideo = url.includes('.mp4') || url.includes('.mov'); if (isVideo) return `<div class="image-preview"><video controls style="max-width:100%; max-height:150px;"><source src="${url}"></video></div>`; return `<div class="image-preview"><img src="${url}" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\"color:red\">Imagem não encontrada</span>'"></div>`; }
-        async function carregarMidias() { try { const res = await fetch('http://localhost:8001/api/galeria'); listaMidias = await res.json(); return listaMidias; } catch(e) { console.error('Erro ao carregar mídias:', e); return []; } }
-        function gerarSelectMidias(selectedUrl) { if (listaMidias.length === 0) return `<div class="alert-info" style="padding:10px; background:#e6f7ff; border-radius:8px;">Nenhuma mídia na galeria. <a href="#" onclick="loadSection('galeria')">Adicione uma</a> primeiro.</div>`; let html = `<select class="form-select" id="imagemSelect" onchange="document.getElementById('imagemUrl').value=this.value; document.getElementById('previewMidia').innerHTML=previewImagem(this.value)"><option value="">-- Selecione uma imagem/vídeo da galeria --</option>`; listaMidias.forEach(m => { const isVideo = m.arquivo.includes('.mp4') || m.arquivo.includes('.mov'); const icon = isVideo ? '🎬' : '🖼️'; html += `<option value="${m.arquivo}" ${selectedUrl === m.arquivo ? 'selected' : ''}>${icon} ${escapeHtml(m.titulo)}</option>`; }); html += `</select>`; return html; }
+        
+        function previewImagem(url) { 
+            if (!url) return '<div class="image-preview">Sem imagem</div>'; 
+            
+            // Se for link do Nextcloud local
+            if (url.includes('192.168.1.14') || url.includes('localhost:8080')) {
+                // Adicionar parâmetros para forçar carregamento
+                url = url + (url.includes('?') ? '&cors=1' : '?cors=1');
+            }
+            
+            const isVideo = url.includes('.mp4') || url.includes('.mov'); 
+            
+            if (isVideo) {
+                return `<div class="image-preview">
+                    <video controls style="max-width:100%; max-height:150px;">
+                        <source src="${url}">
+                    </video>
+                </div>`; 
+            }
+            
+            return `<div class="image-preview">
+                <img src="${url}" 
+                    style="max-width:100%; max-height:150px; object-fit:cover; border-radius:8px;" 
+                    onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\"color:red\">⚠️ Imagem não carregada<br><small>URL: ${url.substring(0,50)}...</small></span>'">
+            </div>`; 
+        }
+        
+        async function carregarMidias() { 
+            try { 
+                const res = await fetch('http://localhost:8002/api/galeria'); 
+                listaMidias = await res.json(); 
+                return listaMidias; 
+            } catch(e) { 
+                console.error('Erro ao carregar mídias:', e); 
+                return []; 
+            } 
+        }
+        
+        function gerarSelectMidias(selectedUrl) { 
+            if (listaMidias.length === 0) return `<div class="alert-info" style="padding:10px; background:#e6f7ff; border-radius:8px;">Nenhuma mídia na galeria. <a href="#" onclick="loadSection('galeria')">Adicione uma</a> primeiro.</div>`; 
+            let html = `<select class="form-select" id="imagemSelect" onchange="document.getElementById('imagemUrl').value=this.value; document.getElementById('previewMidia').innerHTML=previewImagem(this.value)"><option value="">-- Selecione uma imagem/vídeo da galeria --</option>`; 
+            listaMidias.forEach(m => { 
+                const isVideo = m.arquivo && (m.arquivo.includes('.mp4') || m.arquivo.includes('.mov')); 
+                const icon = isVideo ? '🎬' : '🖼️'; 
+                html += `<option value="${m.arquivo}" ${selectedUrl === m.arquivo ? 'selected' : ''}>${icon} ${escapeHtml(m.titulo)}</option>`; 
+            }); 
+            html += `</select>`; 
+            return html; 
+        }
+        
         async function loadSection(s) {
             currentSection = s;
             await carregarMidias();
@@ -118,13 +200,15 @@
             else if (s === 'galeria') await loadGaleria();
             else if (s === 'mensagens') await loadMensagens();
         }
+        
         async function loadDashboard() {
-            const n = await fetch('/api/noticias/').then(r=>r.json());
+           ' const n = await fetch('/api/noticias/').then(r=>r.json());'
             const e = await fetch('/api/eventos/').then(r=>r.json());
             const p = await fetch('/api/pastorais/').then(r=>r.json());
             const c = await fetch('/api/contatos/').then(r=>r.json());
             document.getElementById('contentArea').innerHTML = `<div class="stats-grid"><div class="stat-card"><h3>${n.length}</h3><p>Notícias</p></div><div class="stat-card"><h3>${e.length}</h3><p>Eventos</p></div><div class="stat-card"><h3>${p.length}</h3><p>Pastorais</p></div><div class="stat-card"><h3>${c.length}</h3><p>Mensagens</p></div></div><div class="content-card"><h3>Bem-vindo ao Painel Administrativo</h3><p>Selecione uma opção no menu lateral.</p></div>`;
         }
+        
         async function loadList(section, headers) {
             try {
                 const res = await fetch(`/api/${section}/`);
@@ -132,11 +216,15 @@
                 let html = `<div class="content-card"><div class="card-header"><h3><i class="fas ${section === 'noticias' ? 'fa-newspaper' : section === 'eventos' ? 'fa-calendar-alt' : 'fa-hands-helping'}" style="margin-right:8px; color:#c9a227;"></i> ${section.charAt(0).toUpperCase() + section.slice(1)}</h3><button class="btn-primary" onclick="abrirModal('${section}')"><i class="fas fa-plus"></i> Novo</button></div><div class="table-responsive"><table class="table"><thead> <th>${headers.join('</th><th>')}</th><th>Ações</th> </thead><tbody>`;
                 let contador = 1;
                 items.forEach(item => {
-                    html += `      <tr>`;
+                    html += `<tr>`;
                     if (section === 'noticias') {
-                        html += `<td style="width:60px;">${contador++}</td><td style="width:80px;">${item.imagem ? `<img src="${item.imagem}" style="width:60px; height:40px; object-fit:cover; border-radius:6px;">` : '<span style="color:#ccc;">Sem imagem</span>'}</td><td><strong>${escapeHtml(item.titulo)}</strong></td><td style="width:100px;">${new Date(item.data_publicacao).toLocaleDateString()}</td>`;
+                        html += `<td style="width:60px;">${contador++}</td><td style="width:80px;">${item.imagem ? `<img src="${item.imagem}" 
+     style="width:60px; height:40px; object-fit:cover; border-radius:6px;" 
+     onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\"color:#999; font-size:10px;\">❌</span>'">` : '<span style="color:#ccc;">Sem imagem</span>'}</td><td><strong>${escapeHtml(item.titulo)}</strong></td><td style="width:100px;">${new Date(item.data_publicacao).toLocaleDateString()}</td>`;
                     } else if (section === 'eventos') {
-                        html += `<td style="width:60px;">${contador++}</td><td style="width:80px;">${item.imagem ? `<img src="${item.imagem}" style="width:60px; height:40px; object-fit:cover; border-radius:6px;">` : '<span style="color:#ccc;">Sem imagem</span>'}</td><td><strong>${escapeHtml(item.nome)}</strong></td><td style="width:100px;">${item.data ? new Date(item.data).toLocaleDateString() : '-'}</td><td>${escapeHtml(item.local || '-')}</td>`;
+                        html += `<td style="width:60px;">${contador++}</td><td style="width:80px;">${item.imagem ? `<img src="${item.imagem}" 
+     style="width:60px; height:40px; object-fit:cover; border-radius:6px;" 
+     onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\"color:#999; font-size:10px;\">❌</span>'">` : '<span style="color:#ccc;">Sem imagem</span>'}</td><td><strong>${escapeHtml(item.nome)}</strong></td><td style="width:100px;">${item.data ? new Date(item.data).toLocaleDateString() : '-'}</td><td>${escapeHtml(item.local || '-')}</td>`;
                     } else if (section === 'pastorais') {
                         html += `<td style="width:60px;">${contador++}</td><td><strong>${escapeHtml(item.nome)}</strong></td><td>${escapeHtml(item.responsavel || '-')}</td><td>${escapeHtml(item.contato || '-')}</td>`;
                     }
@@ -146,6 +234,7 @@
                 document.getElementById('contentArea').innerHTML = html;
             } catch(e) { document.getElementById('contentArea').innerHTML = `<div class="alert-error">Erro: ${e.message}</div>`; }
         }
+        
         async function loadHorarios() {
             try {
                 const res = await fetch('/api/admin/horarios', { headers: authHeaders });
@@ -166,57 +255,120 @@
                 document.getElementById('contentArea').innerHTML = html;
             } catch(e) { document.getElementById('contentArea').innerHTML = `<div class="alert-error">Erro: ${e.message}</div>`; }
         }
+        
         async function loadGaleria() {
             try {
-                const res = await fetch('http://localhost:8001/api/galeria');
+                const res = await fetch('http://localhost:8002/api/galeria');
                 const items = await res.json();
-                let html = `<div class="content-card"><div class="card-header"><h3><i class="fas fa-images" style="margin-right:8px; color:#c9a227;"></i> Galeria</h3><button class="btn-primary" onclick="abrirUploadModal()"><i class="fas fa-upload"></i> Adicionar</button></div><div class="table-responsive"><table class="table"><thead> <th style="width:60px;">#</th><th>Nome</th><th>Arquivo</th><th style="width:100px;">Data</th><th style="width:130px;">Ações</th> </thead><tbody>`;
+                
+                let html = `<div class="content-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-images" style="margin-right:8px; color:#c9a227;"></i> Galeria</h3>
+                        <button class="btn-primary" onclick="abrirUploadModal()"><i class="fas fa-upload"></i> Adicionar</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width:60px;">#</th>
+                                    <th>Imagem</th>
+                                    <th>Nome</th>
+                                    <th>Arquivo</th>
+                                    <th style="width:100px;">Data</th>
+                                    <th style="width:130px;">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+                
                 if (items.length === 0) {
-                    html += '<tr><td colspan="5" style="text-align:center;">Nenhuma mídia cadastrada.</td></tr>';
+                    html += '<tr><td colspan="6" style="text-align:center;">Nenhuma mídia cadastrada.</td></tr>';
                 } else {
                     let contador = 1;
                     items.forEach(item => {
+                        // Verificar se é imagem ou vídeo
+                        const isVideo = item.arquivo && (item.arquivo.includes('.mp4') || item.arquivo.includes('.mov') || item.tipo === 'video');
+                        const previewHtml = item.arquivo ? 
+                            (isVideo ? 
+                                `<video style="width:60px; height:40px; object-fit:cover; border-radius:6px;" muted>
+                                    <source src="${item.arquivo}">
+                                </video>` :
+                                `<img src="${item.arquivo}" style="width:60px; height:40px; object-fit:cover; border-radius:6px;" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\"color:#999;\">❌</span>'">`
+                            ) : '<span style="color:#ccc;">Sem arquivo</span>';
+                        
                         html += `<tr>
-                            <td>${contador++}</td>
+                            <td style="width:60px;">${contador++}</td>
+                            <td style="width:80px;">${previewHtml}</td>
                             <td><strong>${escapeHtml(item.titulo)}</strong><br><small>${escapeHtml(item.descricao || '')}</small></td>
-                            <td><code style="font-size:0.7rem;">${item.arquivo}</code><br><button class="copy-btn" onclick="copiarUrl('${item.arquivo}')">Copiar URL</button></td>
-                            <td>${new Date(item.createdAt).toLocaleDateString()}</td>
-                            <td class="action-buttons"><button class="btn-warning" onclick="editarMidia('${item._id}', '${escapeHtml(item.titulo)}')">Editar</button><button class="btn-danger" onclick="excluirMidia('${item._id}')">Excluir</button></td>
+                            <td><code style="font-size:0.7rem; word-break:break-all;">${item.arquivo}</code><br><button class="copy-btn" onclick="copiarUrl('${item.arquivo}')">Copiar URL</button></td>
+                            <td>${item.createdAt ? new Date(item.createdAt).toLocaleDateString() : '-'}</td>
+                            <td class="action-buttons">
+                                <button class="btn-warning" onclick="editarMidia('${item._id}', '${escapeHtml(item.titulo)}')"><i class="fas fa-edit"></i> Editar</button>
+                                <button class="btn-danger" onclick="excluirMidia('${item._id}')"><i class="fas fa-trash"></i> Excluir</button>
+                            </td>
                         </tr>`;
                     });
                 }
+                
                 html += `</tbody></table></div></div>`;
                 document.getElementById('contentArea').innerHTML = html;
+                
             } catch(e) { 
-                document.getElementById('contentArea').innerHTML = '<div class="alert-error">Erro ao carregar galeria</div>';
+                console.error('Erro ao carregar galeria:', e);
+                document.getElementById('contentArea').innerHTML = '<div class="alert-error">Erro ao carregar galeria: ' + e.message + '</div>';
             }
         }
-        function abrirUploadModal() { document.getElementById('uploadModal').style.display = 'flex'; }
-        function fecharUploadModal() { document.getElementById('uploadModal').style.display = 'none'; }
-        function previewFile() { const file = document.getElementById('uploadFile').files[0]; if (!file) return; selectedFile = file; const reader = new FileReader(); reader.onload = function(e) { const preview = document.getElementById('previewContainer'); if (file.type.startsWith('video/')) { preview.innerHTML = `<video controls style="max-width:100%; max-height:100px;"><source src="${e.target.result}"></video>`; } else { preview.innerHTML = `<img src="${e.target.result}" class="preview-img">`; } }; reader.readAsDataURL(file); }
-        async function uploadMidia() { const titulo = document.getElementById('uploadTitulo').value; if (!titulo) { alert('Digite um nome'); return; } if (!selectedFile) { alert('Selecione um arquivo'); return; } const formData = new FormData(); formData.append('titulo', titulo); formData.append('descricao', document.getElementById('uploadDescricao')?.value || ''); formData.append('file', selectedFile); const response = await fetch('/api/admin/galeria', { method: 'POST', headers: { 'Authorization': 'Bearer admin-token' }, body: formData }); if (response.ok) { fecharUploadModal(); loadSection('galeria'); alert('Adicionado!'); } else { alert('Erro ao adicionar'); } }
-        async function editarMidia(id, titulo) { const novo = prompt('Novo nome:', titulo); if (novo) await fetch(`/api/admin/galeria/${id}`, { method: 'PUT', headers: authHeaders, body: JSON.stringify({ titulo: novo }) }); loadSection('galeria'); }
-        async function excluirMidia(id) { if (confirm('Excluir?')) await fetch(`/api/admin/galeria/${id}`, { method: 'DELETE', headers: authHeaders }); loadSection('galeria'); }
-        function copiarUrl(url) { navigator.clipboard.writeText(url); alert('URL copiada: ' + url); }
+                
         async function loadMensagens() {
             try {
                 const res = await fetch('/api/contatos/');
                 const items = await res.json();
-                let html = `<div class="content-card"><div class="card-header"><h3><i class="fas fa-envelope" style="margin-right:8px; color:#c9a227;"></i> Mensagens</h3></div><div class="table-responsive"><table class="table"><thead> <th style="width:150px;">Data</th><th>Tipo</th><th>Nome</th><th>Email</th><th>Status</th><th style="width:130px;">Ações</th> </thead><tbody>`;
-                items.forEach(item => {
+                let html = `<div class="content-card"><div class="card-header"><h3><i class="fas fa-envelope" style="margin-right:8px; color:#c9a227;"></i> Mensagens</h3></div><div class="table-responsive"><table class="table"><thead><th>#</th><th>Nome</th><th>Email</th><th>Tipo</th><th>Status</th><th>Data</th><th style="width:100px;">Ações</th></thead><tbody>`;
+                let contador = 1;
+                items.forEach(msg => {
                     html += `<tr>
-                        <td>${formatarData(item.created_at)}</td>
-                        <td><span class="tipo-badge">${tipoLabels[item.tipo] || '📧 Contato'}</span></td>
-                        <td><strong>${escapeHtml(item.nome)}</strong></td>
-                        <td>${escapeHtml(item.email)}</td>
-                        <td><span class="status-badge ${item.respondido ? 'status-respondido' : 'status-pendente'}">${item.respondido ? 'Respondido' : 'Pendente'}</span></td>
-                        <td class="action-buttons"><button class="btn-info" onclick="verMensagem(${item.id}, '${escapeHtml(item.nome)}', '${escapeHtml(item.email)}', '${escapeHtml(item.telefone || '')}', '${escapeHtml(item.mensagem)}', '${item.tipo || 'contato'}', ${item.respondido})">Ver</button><button class="btn-danger" onclick="excluirMensagem(${item.id})">Excluir</button></td>
+                        <td>${contador++}</td>
+                        <td>${escapeHtml(msg.nome)}</td>
+                        <td>${escapeHtml(msg.email)}</td>
+                        <td><span class="tipo-badge">${tipoLabels[msg.tipo] || msg.tipo}</span></td>
+                        <td><span class="status-badge ${msg.respondido ? 'status-respondido' : 'status-pendente'}">${msg.respondido ? 'Respondido' : 'Pendente'}</span></td>
+                        <td>${formatarData(msg.createdAt)}</td>
+                        <td><button class="btn-info" onclick="verMensagem('${msg.id}', '${escapeHtml(msg.nome)}', '${escapeHtml(msg.email)}', '${escapeHtml(msg.telefone || '')}', '${escapeHtml(msg.mensagem)}', '${msg.tipo}', ${msg.respondido})"><i class="fas fa-eye"></i> Ver</button></td>
                     </tr>`;
                 });
                 html += `</tbody></table></div></div>`;
                 document.getElementById('contentArea').innerHTML = html;
-            } catch(e) { document.getElementById('contentArea').innerHTML = `<div class="alert-error">Erro: ${e.message}</div>`; }
+            } catch(e) {
+                document.getElementById('contentArea').innerHTML = '<div class="alert-error">Erro ao carregar mensagens</div>';
+            }
         }
+        
+        function abrirUploadModal() { 
+            document.getElementById('uploadTitulo').value = '';
+            document.getElementById('uploadLink').value = '';
+            document.getElementById('uploadFile').value = '';
+            document.getElementById('previewContainer').innerHTML = '';
+            selectedFile = null;
+            document.getElementById('uploadModal').style.display = 'flex'; 
+        }
+        
+        function fecharUploadModal() { document.getElementById('uploadModal').style.display = 'none'; }
+        
+        function previewFile() { 
+            const file = document.getElementById('uploadFile').files[0]; 
+            if (!file) return; 
+            selectedFile = file; 
+            const reader = new FileReader(); 
+            reader.onload = function(e) { 
+                const preview = document.getElementById('previewContainer'); 
+                if (file.type.startsWith('video/')) { 
+                    preview.innerHTML = `<video controls style="max-width:100%; max-height:100px;"><source src="${e.target.result}"></video>`; 
+                } else { 
+                    preview.innerHTML = `<img src="${e.target.result}" class="preview-img">`; 
+                } 
+            }; 
+            reader.readAsDataURL(file); 
+        }
+        
         function verMensagem(id, nome, email, telefone, mensagem, tipo, respondido) {
             currentViewId = id;
             document.getElementById('viewModalBody').innerHTML = `<div><strong>Nome:</strong> ${nome}</div><div><strong>Email:</strong> ${email}</div><div><strong>Telefone:</strong> ${telefone || 'Não informado'}</div><div><strong>Tipo:</strong> ${tipoLabels[tipo] || 'Contato'}</div><div><strong>Status:</strong> ${respondido ? 'Respondido' : 'Pendente'}</div><div style="margin-top:10px;"><strong>Mensagem:</strong><div style="background:#f8f9fa; padding:12px;">${mensagem}</div></div>`;
@@ -225,10 +377,12 @@
             else btn.onclick = () => marcarRespondido(id);
             document.getElementById('viewModal').style.display = 'flex';
         }
+        
         async function marcarRespondido(id) { await fetch(`/api/admin/contatos/${id}/responder`, { method: 'PUT', headers: authHeaders }); fecharViewModal(); loadSection('mensagens'); }
         async function excluirMensagem(id) { if (confirm('Excluir?')) await fetch(`/api/admin/contatos/${id}`, { method: 'DELETE', headers: authHeaders }); loadSection('mensagens'); }
         function excluirView() { if (currentViewId) excluirMensagem(currentViewId); }
         function fecharViewModal() { document.getElementById('viewModal').style.display = 'none'; }
+        
         function abrirModal(tipo, item = null) {
             currentType = tipo; editingId = item?.id || null;
             document.getElementById('modalTitle').innerText = editingId ? `Editar ${tipo}` : `Novo ${tipo}`;
@@ -266,6 +420,7 @@
             document.getElementById('modal').style.display = 'flex';
             setTimeout(() => { const select = document.getElementById('imagemSelect'); if(select) select.addEventListener('change', function() { const url = this.value; document.getElementById('imagemUrl').value = url; document.getElementById('previewMidia').innerHTML = previewImagem(url); }); }, 100);
         }
+        
         async function salvarItem() {
             const tipo = currentType, url = editingId ? `/api/admin/${tipo}/${editingId}` : `/api/admin/${tipo}`, method = editingId ? 'PUT' : 'POST';
             let body = {};
@@ -277,9 +432,144 @@
             if (res.ok) { fecharModal(); loadSection(currentSection); }
             else alert('Erro ao salvar');
         }
+        
         async function editarItem(tipo, id) { const res = await fetch(tipo === 'horarios' ? `/api/horarios/${id}` : `/api/${tipo}/${id}`); const item = await res.json(); abrirModal(tipo, item); }
         async function excluirItem(tipo, id) { if (confirm('Excluir?')) await fetch(`/api/admin/${tipo}/${id}`, { method: 'DELETE', headers: authHeaders }); loadSection(currentSection); }
-        document.querySelectorAll('.nav-item').forEach(item => { item.addEventListener('click', () => { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); item.classList.add('active'); loadSection(item.dataset.section); }); });
+        
+        // FUNÇÃO DE UPLOAD COM SUPORTE A NEXTCLOUD
+        async function uploadMidia() {
+            const titulo = document.getElementById('uploadTitulo').value;
+            const linkNextcloud = document.getElementById('uploadLink').value;
+            
+            if (!titulo) { 
+                alert('Digite um nome para a mídia'); 
+                return; 
+            }
+            
+            // Se tem link do Nextcloud
+            if (linkNextcloud && linkNextcloud.trim() !== '') {
+                try {
+                    const response = await fetch('http://localhost:8002/api/galeria', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            titulo: titulo,
+                            descricao: '',
+                            arquivo: linkNextcloud,
+                            tipo: linkNextcloud.includes('.mp4') || linkNextcloud.includes('.mov') ? 'video' : 'imagem',
+                            createdAt: new Date()
+                        })
+                    });
+                    
+                    if (response.ok) { 
+                        fecharUploadModal(); 
+                        loadSection('galeria'); 
+                        alert('Mídia adicionada com link do Nextcloud!');
+                        // Limpar campos
+                        document.getElementById('uploadTitulo').value = '';
+                        document.getElementById('uploadLink').value = '';
+                    } else { 
+                        const error = await response.text();
+                        alert('Erro ao adicionar: ' + error);
+                    }
+                } catch(err) {
+                    alert('Erro de conexão: ' + err.message);
+                }
+                return;
+            }
+            
+            // Se não tem link, verifica se tem arquivo selecionado
+            if (!selectedFile) { 
+                alert('Selecione um arquivo ou informe um link do Nextcloud'); 
+                return; 
+            }
+            
+            const formData = new FormData();
+            formData.append('titulo', titulo);
+            formData.append('descricao', '');
+            formData.append('file', selectedFile);
+            
+            try {
+                const response = await fetch('http://localhost:8002/api/galeria', { 
+                    method: 'POST', 
+                    body: formData 
+                });
+                
+                if (response.ok) { 
+                    fecharUploadModal(); 
+                    loadSection('galeria'); 
+                    alert('Mídia adicionada com sucesso!');
+                    // Limpar campos
+                    document.getElementById('uploadTitulo').value = '';
+                    document.getElementById('uploadLink').value = '';
+                    document.getElementById('uploadFile').value = '';
+                    document.getElementById('previewContainer').innerHTML = '';
+                    selectedFile = null;
+                } else { 
+                    const error = await response.text();
+                    alert('Erro ao adicionar: ' + error);
+                }
+            } catch(err) {
+                alert('Erro de conexão: ' + err.message);
+            }
+        }
+        
+        // Função para editar mídia
+        async function editarMidia(id, tituloAtual) {
+            const novoTitulo = prompt('Editar nome da mídia:', tituloAtual);
+            if (!novoTitulo || novoTitulo === tituloAtual) return;
+            
+            try {
+                const response = await fetch(`http://localhost:8002/api/galeria/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ titulo: novoTitulo })
+                });
+                
+                if (response.ok) {
+                    alert('Mídia atualizada com sucesso!');
+                    loadSection('galeria');
+                } else {
+                    alert('Erro ao atualizar');
+                }
+            } catch(err) {
+                alert('Erro: ' + err.message);
+            }
+        }
+
+        // Função para excluir mídia
+        async function excluirMidia(id) {
+            if (!confirm('Tem certeza que deseja excluir esta mídia?')) return;
+            
+            try {
+                const response = await fetch(`http://localhost:8002/api/galeria/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    alert('Mídia excluída com sucesso!');
+                    loadSection('galeria');
+                } else {
+                    alert('Erro ao excluir');
+                }
+            } catch(err) {
+                alert('Erro: ' + err.message);
+            }
+        }
+
+        // Função para copiar URL
+        function copiarUrl(url) {
+            navigator.clipboard.writeText(url);
+            alert('URL copiada: ' + url);
+        }
+        
+        document.querySelectorAll('.nav-item').forEach(item => { 
+            item.addEventListener('click', () => { 
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); 
+                item.classList.add('active'); 
+                loadSection(item.dataset.section); 
+            }); 
+        });
         loadSection('dashboard');
     </script>
 </body>

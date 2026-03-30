@@ -16,7 +16,7 @@ services:
     environment:
       DATABASE_URL: "postgresql://paroquia:paroquia123@db:5432/paroquia_db"
     ports:
-      - "8000:8000"
+      - "8002:8002"
     depends_on:
       - db
     command: sh -c "npm install && npx prisma generate && npx prisma db push --accept-data-loss && npm start"

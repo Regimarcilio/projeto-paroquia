@@ -73,7 +73,7 @@
             };
             const res = await fetch('/api/admin/sobre', {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer admin-token' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify(data)
             });
             if (res.ok) {

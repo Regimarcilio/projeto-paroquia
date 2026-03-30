@@ -3,35 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sobre - Paróquia São Miguel</title>
+    <title>A Paróquia - São Miguel Arcanjo</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .paroquia-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .paroquia-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .paroquia-header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            color: #0f2b3d;
+            margin-bottom: 10px;
+        }
+        .paroquia-header p {
+            color: #64748b;
+            font-size: 1rem;
+        }
+
+        /* Card da História - largura total */
+        .historia-card {
+            background: linear-gradient(135deg, #0f2b3d 0%, #1a3a4f 100%);
+            border-radius: 24px;
+            padding: 35px;
+            margin-bottom: 40px;
+            color: white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .historia-card i {
+            font-size: 2.5rem;
+            color: #c9a227;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+        .historia-card h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #c9a227;
+        }
+        .historia-card p {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        /* Grid para os outros cards */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        .info-card {
+            background: linear-gradient(135deg, #0f2b3d 0%, #1a3a4f 100%);
+            border-radius: 20px;
+            padding: 25px;
+            color: white;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        .info-card i {
+            font-size: 2.2rem;
+            color: #c9a227;
+            margin-bottom: 15px;
+        }
+        .info-card h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            color: #c9a227;
+        }
+        .info-card p {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            opacity: 0.95;
+        }
+        .valores-list {
+            text-align: left;
+            list-style: none;
+            padding-left: 0;
+            margin-top: 10px;
+        }
+        .valores-list li {
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
+        .valores-list li i {
+            font-size: 0.8rem;
+            margin-right: 8px;
+            color: #c9a227;
+        }
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #64748b;
+        }
+        @media (max-width: 768px) {
+            .paroquia-header h1 { font-size: 1.8rem; }
+            .historia-card { padding: 25px; }
+            .historia-card h2 { font-size: 1.4rem; }
+            .info-card { padding: 20px; }
+            .info-card h3 { font-size: 1.1rem; }
+        }
+    </style>
 </head>
 <body>
     <header class="header">
-        <div class="top-bar"><div class="container"><div><i class="fas fa-map-marker-alt"></i> Rua da Fé, 123 - Centro</div><div><i class="fas fa-phone-alt"></i> (11) 9999-9999</div></div></div>
-        <div class="container"><nav class="nav-main"><a href="/" class="logo"><div class="logo-icon"><i class="fas fa-shield-alt"></i></div><div class="logo-text"><h1>São Miguel Arcanjo</h1><span>Paróquia Católica</span></div></a><ul class="nav-menu"><li><a href="/">Início</a></li><li><a href="/pages/sobre.html">A Paróquia</a></li><li><a href="/pages/horarios.html">Horários</a></li><li><a href="/pages/pastorais.html">Pastorais</a></li><li><a href="/pages/eventos.html">Eventos</a></li><li><a href="/pages/noticias.html">Notícias</a></li><li><a href="/pages/contato.html">Contato</a></li><li><a href="/pages/admin/login.html" class="btn-donate">Admin</a></li></ul></nav></div>
+        <div class="top-bar">
+            <div class="container">
+                <div><i class="fas fa-map-marker-alt"></i> <span id="config-endereco">Carregando...</span></div>
+                <div><i class="fas fa-phone-alt"></i> <span id="config-telefone">Carregando...</span></div>
+            </div>
+        </div>
+        <div class="container">
+            <nav class="nav-main">
+                <a href="/pages/apresentacao.html" class="logo">
+                    <div class="logo-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="logo-text">
+                        <h1>São Miguel Arcanjo</h1>
+                        <span>Paróquia Católica</span>
+                    </div>
+                </a>
+                <ul class="nav-menu">
+                    <li><a href="/pages/apresentacao.html">Apresentação</a></li>
+                    <li><a href="/pages/sobre.html" class="active">A Paróquia</a></li>
+                    <li><a href="/pages/horarios.html">Horários</a></li>
+                    <li><a href="/pages/pastorais.html">Pastorais</a></li>
+                    <li><a href="/pages/eventos.html">Eventos</a></li>
+                    <li><a href="/pages/noticias.html">Notícias</a></li>
+                    <li><a href="/pages/contato.html">Contato</a></li>
+                    <li><a href="/pages/admin/login.html" class="btn-donate">Admin</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
 
-    <section class="page-header"><div class="container"><h1>Sobre a Paróquia</h1><p>Conheça nossa história e missão</p></div></section>
+    <div class="paroquia-container">
+        <div class="paroquia-header">
+            <h1><i class="fas fa-church"></i> A Paróquia São Miguel Arcanjo</h1>
+            <p>Conheça nossa história, missão, visão e valores</p>
+        </div>
 
-    <div class="container py-5">
-        <div id="sobre-container"></div>
+        <div id="sobre-conteudo">
+            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Carregando informações...</div>
+        </div>
     </div>
 
-    <footer class="footer"><div class="container"><div class="copyright">&copy; 2025 Paróquia São Miguel Arcanjo</div></div></footer>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3 class="footer-title"><span id="config-padroeiro">Carregando...</span></h3>
+                    <p><span id="config-endereco-footer">Carregando...</span></p>
+                    <p><i class="fas fa-phone"></i> <span id="config-telefone-footer">Carregando...</span></p>
+                    <p><i class="fas fa-envelope"></i> <span id="config-email-footer">Carregando...</span></p>
+                </div>
+                <div class="footer-links">
+                    <h3 class="footer-title">Links Rápidos</h3>
+                    <ul>
+                        <li><a href="/pages/sobre.html">A Paróquia</a></li>
+                        <li><a href="/pages/horarios.html">Horários</a></li>
+                        <li><a href="/pages/contato.html">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3 class="footer-title">Redes Sociais</h3>
+                    <ul>
+                        <li><a href="https://www.instagram.com/saomiguel.jlle/" target="_blank"><i class="fab fa-instagram"></i> Instagram</a></li>
+                        <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 Paróquia São Miguel Arcanjo. Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
 
+    <script src="/js/config.js"></script>
     <script>
-        fetch('/api/sobre/').then(r=>r.json()).then(data => {
-            document.getElementById('sobre-container').innerHTML = `
-                <div class="card"><h3><i class="fas fa-history"></i> Nossa História</h3><p>${data.historia || 'Em breve...'}</p></div>
-                <div class="card"><h3><i class="fas fa-cross"></i> Missão</h3><p>${data.missao || 'Em breve...'}</p></div>
-                <div class="card"><h3><i class="fas fa-eye"></i> Visão</h3><p>${data.visao || 'Em breve...'}</p></div>
-                <div class="card"><h3><i class="fas fa-heart"></i> Valores</h3><p>${data.valores || 'Em breve...'}</p></div>
-            `;
-        });
+        function formatarValores(valores) {
+            if (!valores) return '<li>Fé</li><li>Comunhão</li><li>Caridade</li><li>Serviço</li><li>Formação</li>';
+            return valores.split(',').map(v => `<li><i class="fas fa-check-circle"></i> ${v.trim()}</li>`).join('');
+        }
+
+        fetch('/api/sobre/')
+            .then(r => r.json())
+            .then(data => {
+                const container = document.getElementById('sobre-conteudo');
+                
+                let html = `
+                    <div class="historia-card">
+                        <i class="fas fa-history"></i>
+                        <h2>Nossa História</h2>
+                        <p>${data.historia || 'Em breve, conheça a história da nossa paróquia.'}</p>
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <i class="fas fa-bullseye"></i>
+                            <h3>Missão</h3>
+                            <p>${data.missao || 'Evangelizar as famílias do Paranaguamirim, promovendo o encontro com Cristo por meio da acolhida e da formação.'}</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <i class="fas fa-eye"></i>
+                            <h3>Visão</h3>
+                            <p>${data.visao || 'Ser uma paróquia viva e acolhedora, reconhecida como referência espiritual na região.'}</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <i class="fas fa-heart"></i>
+                            <h3>Valores</h3>
+                            <ul class="valores-list">
+                                ${formatarValores(data.valores)}
+                            </ul>
+                        </div>
+                        
+                    </div>
+                `;
+                
+                container.innerHTML = html;
+            })
+            .catch(err => {
+                console.error('Erro:', err);
+                document.getElementById('sobre-conteudo').innerHTML = '<div class="loading" style="color:red;">Erro ao carregar informações da paróquia.</div>';
+            });
     </script>
-    <style>.card{background:white;padding:30px;border-radius:12px;margin-bottom:30px;box-shadow:0 2px 10px rgba(0,0,0,0.05)}.card h3{color:var(--primary-color);margin-bottom:15px}.py-5{padding:80px 0}</style>
 </body>
 </html>

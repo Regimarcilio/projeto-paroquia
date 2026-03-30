@@ -6,9 +6,9 @@ services:
     environment:
       DATABASE_URL: "sqlite:/app/data/paroquia.db"
       JWT_SECRET: paroquia-secret-key-2024
-      PORT: 8000
+      PORT: 8002
     ports:
-      - "8000:8000"
+      - "8002:8002"
     volumes:
       - ./backend:/app
       - /app/node_modules

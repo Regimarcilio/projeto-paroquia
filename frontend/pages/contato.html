@@ -26,8 +26,33 @@
 </head>
 <body>
     <header class="header">
-        <div class="top-bar"><div class="container"><div><i class="fas fa-map-marker-alt"></i> Rua da Fé, 123 - Centro</div><div><i class="fas fa-phone-alt"></i> (11) 9999-9999</div></div></div>
-        <div class="container"><nav class="nav-main"><a href="/" class="logo"><div class="logo-icon"><i class="fas fa-shield-alt"></i></div><div class="logo-text"><h1>São Miguel Arcanjo</h1><span>Paróquia Católica</span></div></a><ul class="nav-menu"><li><a href="/">Início</a></li><li><a href="/pages/sobre.html">A Paróquia</a></li><li><a href="/pages/horarios.html">Horários</a></li><li><a href="/pages/eventos.html">Eventos</a></li><li><a href="/pages/pastorais.html">Pastorais</a></li><li><a href="/pages/noticias.html">Notícias</a></li><li><a href="/pages/contato.html">Contato</a></li><li><a href="/pages/admin/login.html" class="btn-donate">Admin</a></li></ul></nav></div>
+        <div class="top-bar">
+            <div class="container">
+                <div><i class="fas fa-map-marker-alt"></i> <span id="config-endereco">Carregando...</span></div>
+                <div><i class="fas fa-phone-alt"></i> <span id="config-telefone">Carregando...</span></div>
+            </div>
+        </div>
+        <div class="container">
+            <nav class="nav-main">
+                <a href="/" class="logo">
+                    <div class="logo-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="logo-text">
+                        <h1>São Miguel Arcanjo</h1>
+                        <span>Paróquia Católica</span>
+                    </div>
+                </a>
+                <ul class="nav-menu">
+                    <li><a href="/pages/apresentacao.html" class="active">Home</a></li>
+                    <li><a href="/pages/sobre.html">A Paróquia</a></li>
+                    <li><a href="/pages/horarios.html">Horários</a></li>
+                    <li><a href="/pages/pastorais.html">Pastorais</a></li>
+                    <li><a href="/pages/eventos.html">Eventos</a></li>
+                    <li><a href="/pages/noticias.html">Notícias</a></li>
+                    <li><a href="/pages/contato.html">Contato</a></li>
+                    <li><a href="/pages/admin/login.html" class="btn-donate">Admin</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
 
     <section class="page-header"><div class="container"><h1>Entre em Contato</h1><p>Envie sua mensagem, pedido de oração ou intenção de missa</p></div></section>
@@ -87,7 +112,7 @@
     </div>
 
     <footer class="footer"><div class="container"><div class="copyright">&copy; 2025 Paróquia São Miguel Arcanjo</div></div></footer>
-
+    <script src="/js/config.js"></script>
     <script>
         // Mostrar campo extra para intenção de missa
         document.getElementById('tipo').addEventListener('change', function() {
@@ -115,37 +140,30 @@
         document.getElementById('contactForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const tipo = document.getElementById('tipo').value;
             const nome = document.getElementById('nome').value;
             const email = document.getElementById('email').value;
             const telefone = document.getElementById('telefone').value;
             const mensagem = document.getElementById('mensagem').value;
-            
-            let body = { tipo, nome, email, telefone, mensagem };
-            
-            if (tipo === 'intencao') {
-                body.dataMissa = document.getElementById('dataMissa').value;
-            }
+            const tipo = document.getElementById('tipo').value;
             
             try {
-                const response = await fetch('/api/contato/', {
+                const response = await fetch('/api/contatos', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
+                    body: JSON.stringify({ nome, email, telefone, mensagem, tipo })
                 });
                 
                 if (response.ok) {
-                    document.getElementById('successMsg').style.display = 'block';
-                    document.getElementById('errorMsg').style.display = 'none';
+                    alert('Mensagem enviada com sucesso!');
                     document.getElementById('contactForm').reset();
-                    setTimeout(() => { document.getElementById('successMsg').style.display = 'none'; }, 3000);
                 } else {
-                    throw new Error('Erro');
+                    const error = await response.text();
+                    console.error('Erro:', error);
+                    alert('Erro ao enviar mensagem. Tente novamente.');
                 }
-            } catch (error) {
-                document.getElementById('errorMsg').style.display = 'block';
-                document.getElementById('successMsg').style.display = 'none';
-                setTimeout(() => { document.getElementById('errorMsg').style.display = 'none'; }, 3000);
+            } catch (err) {
+                console.error('Erro:', err);
+                alert('Erro ao enviar mensagem. Tente novamente.');
             }
         });
     </script>

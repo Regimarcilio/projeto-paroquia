@@ -8,42 +8,166 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
     <style>
-        .eventos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; margin-top: 40px; }
-        .evento-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: transform 0.3s; }
-        .evento-card:hover { transform: translateY(-5px); }
-        .evento-card .content { padding: 20px; }
-        .evento-data { color: var(--secondary-color); font-size: 0.9rem; font-weight: bold; margin-bottom: 10px; }
-        .evento-titulo { font-family: 'Cinzel', serif; font-size: 1.2rem; color: var(--primary-color); margin-bottom: 10px; }
-        .evento-desc { color: #666; margin-bottom: 10px; }
-        .evento-local { color: #888; font-size: 0.85rem; }
-        .loading { text-align: center; padding: 50px; }
+        .eventos-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
+            gap: 30px; 
+            margin-top: 40px; 
+        }
+        .evento-card { 
+            background: white; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            transition: transform 0.3s; 
+        }
+        .evento-card:hover { 
+            transform: translateY(-5px); 
+        }
+        .evento-card .content { 
+            padding: 20px; 
+        }
+        .evento-data { 
+            color: #c9a227; 
+            font-size: 0.9rem; 
+            font-weight: bold; 
+            margin-bottom: 10px; 
+        }
+        .evento-titulo { 
+            font-family: 'Cinzel', serif; 
+            font-size: 1.2rem; 
+            color: #0f2b3d; 
+            margin-bottom: 10px; 
+        }
+        .evento-desc { 
+            color: #666; 
+            margin-bottom: 10px; 
+        }
+        .evento-local { 
+            color: #888; 
+            font-size: 0.85rem; 
+        }
+        .loading { 
+            text-align: center; 
+            padding: 50px; 
+        }
+        .py-5 { 
+            padding: 80px 0; 
+        }
     </style>
 </head>
 <body>
     <header class="header">
-        <div class="top-bar"><div class="container"><div><i class="fas fa-map-marker-alt"></i> Rua da Fé, 123 - Centro</div><div><i class="fas fa-phone-alt"></i> (11) 9999-9999</div></div></div>
-        <div class="container"><nav class="nav-main"><a href="/" class="logo"><div class="logo-icon"><i class="fas fa-shield-alt"></i></div><div class="logo-text"><h1>São Miguel Arcanjo</h1><span>Paróquia Católica</span></div></a><ul class="nav-menu"><li><a href="/">Início</a></li><li><a href="/pages/sobre.html">A Paróquia</a></li><li><a href="/pages/horarios.html">Horários</a></li><li><a href="/pages/eventos.html">Eventos</a></li><li><a href="/pages/pastorais.html">Pastorais</a></li><li><a href="/pages/noticias.html">Notícias</a></li><li><a href="/pages/contato.html">Contato</a></li><li><a href="/pages/admin/login.html" class="btn-donate">Admin</a></li></ul></nav></div>
+        <div class="top-bar">
+            <div class="container">
+                <div><i class="fas fa-map-marker-alt"></i> <span id="config-endereco">Carregando...</span></div>
+                <div><i class="fas fa-phone-alt"></i> <span id="config-telefone">Carregando...</span></div>
+            </div>
+        </div>
+        <div class="container">
+            <nav class="nav-main">
+                <a href="/pages/apresentacao.html" class="logo">
+                    <div class="logo-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="logo-text">
+                        <h1>São Miguel Arcanjo</h1>
+                        <span>Paróquia Católica</span>
+                    </div>
+                </a>
+                <ul class="nav-menu">
+                    <li><a href="/pages/apresentacao.html">Apresentação</a></li>
+                    <li><a href="/pages/sobre.html">A Paróquia</a></li>
+                    <li><a href="/pages/horarios.html">Horários</a></li>
+                    <li><a href="/pages/pastorais.html">Pastorais</a></li>
+                    <li><a href="/pages/eventos.html" class="active">Eventos</a></li>
+                    <li><a href="/pages/noticias.html">Notícias</a></li>
+                    <li><a href="/pages/contato.html">Contato</a></li>
+                    <li><a href="/pages/admin/login.html" class="btn-donate">Admin</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
 
-    <section class="page-header"><div class="container"><h1>Eventos</h1><p>Confira a programação da nossa paróquia</p></div></section>
+    <section class="page-header">
+        <div class="container">
+            <h1>Eventos</h1>
+            <p>Confira a programação da nossa paróquia</p>
+        </div>
+    </section>
 
-    <div class="container py-5"><div id="eventos-container" class="eventos-grid"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Carregando eventos...</div></div></div>
+    <div class="container py-5">
+        <div id="eventos-container" class="eventos-grid">
+            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Carregando eventos...</div>
+        </div>
+    </div>
 
-    <footer class="footer"><div class="container"><div class="copyright">&copy; 2025 Paróquia São Miguel Arcanjo</div></div></footer>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3 class="footer-title"><span id="config-padroeiro">Carregando...</span></h3>
+                    <p><span id="config-endereco-footer">Carregando...</span></p>
+                    <p><i class="fas fa-phone"></i> <span id="config-telefone-footer">Carregando...</span></p>
+                    <p><i class="fas fa-envelope"></i> <span id="config-email-footer">Carregando...</span></p>
+                </div>
+                <div class="footer-links">
+                    <h3 class="footer-title">Links Rápidos</h3>
+                    <ul>
+                        <li><a href="/pages/sobre.html">A Paróquia</a></li>
+                        <li><a href="/pages/horarios.html">Horários</a></li>
+                        <li><a href="/pages/contato.html">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3 class="footer-title">Redes Sociais</h3>
+                    <ul>
+                        <li><a href="https://www.instagram.com/paroquiasaomiguel__/" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i> Instagram</a></li>
+                        <li><a href="https://www.facebook.com/matrizsaomiguel/"><i class="fab fa-facebook"></i> Facebook</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 Paróquia São Miguel Arcanjo. Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
 
+    <script src="/js/config.js"></script>
     <script>
         fetch('/api/eventos/')
-            .then(res => res.json())
-            .then(eventos => {
-                let html = '';
-                eventos.forEach(e => {
-                    const data = e.data ? new Date(e.data).toLocaleDateString('pt-BR') : 'Data a definir';
-                    html += `<div class="evento-card"><div class="content"><div class="evento-data"><i class="far fa-calendar-alt"></i> ${data} ${e.horario ? `• ${e.horario}` : ''}</div><div class="evento-titulo">${e.nome}</div><div class="evento-desc">${e.descricao || ''}</div>${e.local ? `<div class="evento-local"><i class="fas fa-map-marker-alt"></i> ${e.local}</div>` : ''}</div></div>`;
-                });
-                document.getElementById('eventos-container').innerHTML = html || '<p>Nenhum evento cadastrado.</p>';
-            })
-            .catch(err => document.getElementById('eventos-container').innerHTML = '<div class="alert alert-danger">Erro ao carregar eventos</div>');
+    .then(res => res.json())
+    .then(eventos => {
+        let html = '';
+        eventos.forEach(e => {
+            const data = e.data ? new Date(e.data).toLocaleDateString('pt-BR') : 'Data a definir';
+            const temImagem = e.imagem && e.imagem.trim() !== '';
+            
+            html += `<a href="evento_detalhe.html?id=${e.id}" style="text-decoration: none; color: inherit; display: block;">
+                <div class="evento-card" style="border-radius:12px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.05); margin-bottom:20px; background:white; cursor: pointer;">
+                    ${temImagem ? 
+                        `<img src="${e.imagem}" style="width:100%; height:200px; object-fit:cover;" onerror="this.src='https://placehold.co/400x200/f0f0f0/999?text=Imagem+não+carregada'">` : 
+                        `<div style="height:200px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+                            <i class="fas fa-calendar-alt" style="font-size:48px; color:#ccc;"></i>
+                        </div>`
+                    }
+                    <div class="content" style="padding:20px;">
+                        <div class="evento-data" style="color:#c9a227; font-size:0.9rem; font-weight:bold; margin-bottom:10px;">
+                            <i class="far fa-calendar-alt"></i> ${data} ${e.horario ? `• ${e.horario}` : ''}
+                        </div>
+                        <div class="evento-titulo" style="font-family:'Cinzel',serif; font-size:1.2rem; color:#0f2b3d; margin-bottom:10px;">
+                            ${e.nome}
+                        </div>
+                        <div class="evento-desc" style="color:#666; margin-bottom:10px;">
+                            ${e.descricao ? e.descricao.substring(0, 120) + '...' : ''}
+                        </div>
+                        ${e.local ? `<div class="evento-local" style="color:#888; font-size:0.85rem;">
+                            <i class="fas fa-map-marker-alt"></i> ${e.local}
+                        </div>` : ''}
+                    </div>
+                </div>
+            </a>`;
+        });
+        document.getElementById('eventos-container').innerHTML = html || '<p>Nenhum evento cadastrado.</p>';
+    });
     </script>
-    <style>.py-5{padding:80px 0}</style>
 </body>
 </html>

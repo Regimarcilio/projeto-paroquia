@@ -3,209 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Horários - Paróquia São Miguel</title>
+    <title>Horários - Paróquia São Miguel Arcanjo</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Lato', sans-serif;
-            background: #f8f9fa;
-            color: #333;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* Header */
-        .header {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 999;
-        }
-        
-        .top-bar {
-            background: #0f2b3d;
-            color: white;
-            font-size: 0.8rem;
-            padding: 8px 0;
-        }
-        
-        .nav-main {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 80px;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            text-decoration: none;
-        }
-        
-        .logo-icon {
-            width: 45px;
-            height: 45px;
-            background: #0f2b3d;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #c9a227;
-            font-size: 1.3rem;
-        }
-        
-        .logo-text h1 {
-            font-family: 'Cinzel', serif;
-            font-size: 1.2rem;
-            color: #0f2b3d;
-        }
-        
-        .logo-text span {
-            font-size: 0.7rem;
-            color: #888;
-        }
-        
-        .nav-menu {
-            display: flex;
-            gap: 30px;
-            list-style: none;
-        }
-        
-        .nav-menu a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-        }
-        
-        .btn-donate {
-            background: #c9a227;
-            color: white;
-            padding: 10px 25px;
-            border-radius: 4px;
-            text-decoration: none;
-        }
-        
-        /* Page Header */
-        .page-header {
-            background: linear-gradient(135deg, #0f2b3d 0%, #1a3a4f 100%);
-            padding: 140px 0 60px;
-            text-align: center;
-            color: white;
-        }
-        
-        .page-header h1 {
-            font-family: 'Cinzel', serif;
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-        }
-        
-        /* Schedule */
-        .schedule-container {
-            max-width: 900px;
-            margin: 0 auto;
+        .horarios-page {
+            background: #f8fafc;
             padding: 60px 0;
         }
-        
-        .schedule-day-card {
-            background: white;
-            border-radius: 16px;
-            margin-bottom: 25px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        .horarios-header {
+            text-align: center;
+            margin-bottom: 50px;
         }
-        
-        .schedule-day-header {
-            background: linear-gradient(135deg, #0f2b3d 0%, #1a3a4f 100%);
-            color: white;
-            padding: 18px 25px;
+        .horarios-header h1 {
             font-family: 'Cinzel', serif;
-            font-size: 1.3rem;
+            color: #0f2b3d;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        .horarios-header p {
+            color: #64748b;
+            font-size: 1rem;
+        }
+        .horarios-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-top: 20px;
+
+        }
+        .horario-row {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+        .horario-row:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .horario-day {
+            background: #0f2b3d;
+            color: white;
+            padding: 14px 20px;
             font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
         }
-        
-        .schedule-day-header i {
+        .horario-day i {
+            margin-right: 10px;
             color: #c9a227;
-            margin-right: 12px;
         }
-        
-        .schedule-times {
-            padding: 20px 25px;
+        .horario-times {
+            padding: 16px 20px;
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
         }
-        
-        .schedule-time-item {
-            background: #f8f9fa;
-            padding: 10px 20px;
+        .horario-time-item {
+            background: #f1f5f9;
+            padding: 8px 16px;
             border-radius: 30px;
-            border-left: 3px solid #c9a227;
+            font-size: 0.9rem;
+            color: #1e293b;
         }
-        
-        .schedule-time {
-            font-weight: 700;
-            color: #0f2b3d;
+        .horario-time-item i {
+            color: #c9a227;
+            margin-right: 8px;
         }
-        
-        .schedule-type {
-            color: #666;
+        .horario-type {
             margin-left: 8px;
+            font-size: 0.75rem;
+            color: #64748b;
         }
-        
-        .no-schedule {
+        .empty-state {
             text-align: center;
             padding: 60px;
             background: white;
             border-radius: 16px;
+            color: #64748b;
         }
-        
-        .no-schedule i {
-            font-size: 3rem;
-            color: #c9a227;
-            margin-bottom: 15px;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 60px;
-        }
-        
-        .info-box {
-            background: #f0f7ff;
-            border-left: 4px solid #c9a227;
-            padding: 20px;
-            margin-top: 30px;
-            border-radius: 12px;
-        }
-        
-        /* Footer */
-        .footer {
-            background: #0f2b3d;
-            color: white;
-            padding: 40px 0 20px;
-            text-align: center;
-        }
-        
         @media (max-width: 768px) {
-            .nav-menu { display: none; }
-            .page-header h1 { font-size: 1.8rem; }
-            .schedule-day-header { font-size: 1.1rem; }
+            .horarios-grid {
+                margin: 0 20px;
+            }
+            .horario-day {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -213,8 +100,8 @@
     <header class="header">
         <div class="top-bar">
             <div class="container">
-                <div><i class="fas fa-map-marker-alt"></i> Rua da Fé, 123 - Centro</div>
-                <div><i class="fas fa-phone-alt"></i> (11) 9999-9999</div>
+                <div><i class="fas fa-map-marker-alt"></i> <span id="config-endereco">Carregando...</span></div>
+                <div><i class="fas fa-phone-alt"></i> <span id="config-telefone">Carregando...</span></div>
             </div>
         </div>
         <div class="container">
@@ -227,11 +114,11 @@
                     </div>
                 </a>
                 <ul class="nav-menu">
-                    <li><a href="/">Início</a></li>
+                    <li><a href="/pages/apresentacao.html" class="active">Home</a></li>
                     <li><a href="/pages/sobre.html">A Paróquia</a></li>
                     <li><a href="/pages/horarios.html">Horários</a></li>
-                    <li><a href="/pages/eventos.html">Eventos</a></li>
                     <li><a href="/pages/pastorais.html">Pastorais</a></li>
+                    <li><a href="/pages/eventos.html">Eventos</a></li>
                     <li><a href="/pages/noticias.html">Notícias</a></li>
                     <li><a href="/pages/contato.html">Contato</a></li>
                     <li><a href="/pages/admin/login.html" class="btn-donate">Admin</a></li>
@@ -243,110 +130,82 @@
     <section class="page-header">
         <div class="container">
             <h1>Horários de Missas e Celebrações</h1>
-            <p>Confira os horários das celebrações em nossa paróquia</p>
+            <p>Conheça os horários das celebrações em nossa paróquia</p>
         </div>
     </section>
-
-    <div class="container">
-        <div id="horarios-container" class="schedule-container">
-            <div class="loading">
-                <i class="fas fa-spinner fa-spin fa-2x"></i>
-                <p>Carregando horários...</p>
+    
+        <div class="horarios-grid" id="horarios-container">
+            <div class="empty-state">
+                <i class="fas fa-spinner fa-spin"></i> Carregando...
             </div>
         </div>
     </div>
 
     <footer class="footer">
         <div class="container">
-            <div class="copyright">&copy; 2025 Paróquia São Miguel Arcanjo</div>
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3 class="footer-title">São Miguel Arcanjo</h3>
+                    <p>Rua Paulo Roberto Anastácio, 616 - Paranaguamirim, Joinville/SC</p>
+                    <p><i class="fas fa-phone"></i> (47) 3463-7590</p>
+                    <p><i class="fas fa-envelope"></i> psec78@diocesejoinville.com.br</p>
+                </div>
+                <div class="footer-links">
+                    <h3 class="footer-title">Links Rápidos</h3>
+                    <ul>
+                        <li><a href="/pages/sobre.html">A Paróquia</a></li>
+                        <li><a href="/pages/horarios.html">Horários</a></li>
+                        <li><a href="/pages/contato.html">Contato</a></li>
+                    </ul>
+                </div>
+               <div class="footer-links">
+                    <h3 class="footer-title">Redes Sociais</h3>
+                    <ul>
+                        <li><a href="https://www.instagram.com/paroquiasaomiguel__/" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i> Instagram</a></li>
+                        <li><a href="https://www.facebook.com/matrizsaomiguel/"><i class="fab fa-facebook"></i> Facebook</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 Paróquia São Miguel Arcanjo. Todos os direitos reservados.
+            </div>
         </div>
     </footer>
-
+    <script src="/js/config.js"></script>
     <script>
-        const diasDaSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-
-        async function carregarHorarios() {
-            const container = document.getElementById('horarios-container');
-            
-            try {
-                console.log('Buscando horários...');
-                const response = await fetch('/api/horarios/agrupados');
+        fetch('/api/horarios/agrupados')
+            .then(r => r.json())
+            .then(data => {
+                const container = document.getElementById('horarios-container');
+                const dias = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                
-                const horarios = await response.json();
-                console.log('Horários recebidos:', horarios);
-                
-                let temHorarios = false;
                 let html = '';
-                
-                for (const dia of diasDaSemana) {
-                    const horariosDoDia = horarios[dia] || [];
-                    
-                    if (horariosDoDia.length > 0) {
-                        temHorarios = true;
-                        html += `
-                            <div class="schedule-day-card">
-                                <div class="schedule-day-header">
-                                    <i class="fas fa-calendar-alt"></i> ${dia}
-                                </div>
-                                <div class="schedule-times">
-                        `;
+                dias.forEach(dia => {
+                    if (data[dia] && data[dia].length > 0) {
+                        html += `<div class="horario-row">
+                            <div class="horario-day"><i class="fas ${dia === 'Domingo' ? 'fa-church' : 'fa-calendar-day'}"></i> ${dia}</div>
+                            <div class="horario-times">`;
                         
-                        horariosDoDia.forEach(h => {
-                            html += `
-                                <div class="schedule-time-item">
-                                    <span class="schedule-time">${h.horario}</span>
-                                    <span class="schedule-type">${h.tipo}</span>
-                                </div>
-                            `;
+                        data[dia].forEach(item => {
+                            html += `<span class="horario-time-item">
+                                <i class="far fa-clock"></i> ${item.horario}
+                                <span class="horario-type">${item.tipo}</span>
+                            </span>`;
                         });
                         
-                        html += `
-                                </div>
-                            </div>
-                        `;
+                        html += `</div></div>`;
                     }
+                });
+                
+                if (html === '') {
+                    html = '<div class="empty-state">Nenhum horário cadastrado.</div>';
                 }
                 
-                if (!temHorarios) {
-                    container.innerHTML = `
-                        <div class="no-schedule">
-                            <i class="fas fa-clock"></i>
-                            <h3>Nenhum horário cadastrado</h3>
-                            <p>Os horários serão exibidos assim que forem cadastrados no painel administrativo.</p>
-                            <a href="/pages/admin/login.html" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background: #c9a227; color: white; text-decoration: none; border-radius: 8px;">Acessar Admin</a>
-                        </div>
-                    `;
-                } else {
-                    container.innerHTML = html + `
-                        <div class="info-box">
-                            <i class="fas fa-info-circle"></i>
-                            <strong>Informações importantes:</strong><br>
-                            • Chegue 15 minutos antes para as celebrações<br>
-                            • Os horários podem sofrer alterações em feriados<br>
-                            • Para celebrações especiais, consulte a secretaria paroquial
-                        </div>
-                    `;
-                }
-                
-            } catch (error) {
-                console.error('Erro:', error);
-                container.innerHTML = `
-                    <div class="no-schedule">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h3>Erro ao carregar horários</h3>
-                        <p>${error.message}</p>
-                        <button onclick="carregarHorarios()" style="margin-top: 15px; padding: 10px 20px; background: #c9a227; border: none; border-radius: 8px; cursor: pointer;">Tentar novamente</button>
-                    </div>
-                `;
-            }
-        }
-        
-        // Carregar quando a página abrir
-        carregarHorarios();
+                container.innerHTML = html;
+            })
+            .catch(() => {
+                document.getElementById('horarios-container').innerHTML = '<div class="empty-state">Erro ao carregar horários.</div>';
+            });
     </script>
 </body>
 </html>

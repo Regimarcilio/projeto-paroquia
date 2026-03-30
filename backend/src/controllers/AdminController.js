@@ -2,6 +2,40 @@ const prisma = require('../database');
 const fs = require('fs');
 const path = require('path');
 
+// Atualizar notícia
+exports.atualizarNoticia = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { titulo, conteudo, imagem } = req.body;
+    
+    // Se tiver upload de arquivo
+    let imagemUrl = imagem;
+    if (req.file) {
+      imagemUrl = `/uploads/noticias/${req.file.filename}`;
+    }
+    
+    const result = await db.collection('noticias').updateOne(
+      { id: parseInt(id) },
+      { 
+        $set: {
+          titulo,
+          conteudo,
+          imagem: imagemUrl || null,
+          data_publicacao: new Date().toISOString().slice(0, 19).replace('T', ' ')
+        }
+      }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ error: 'Notícia não encontrada' });
+    }
+    
+    res.json({ id });
+  } catch(e) {
+    res.status(500).json({ error: e.message });
+  }
+};
+
 module.exports = {
   // --- HORÁRIOS ---
   async listarHorarios(req, res) {

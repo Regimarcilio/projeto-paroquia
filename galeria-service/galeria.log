@@ -1,4 +1,4 @@
 nohup: ignorando entrada
 ✅ Conectado ao MongoDB
-🚀 Servidor da Galeria rodando na porta 8001
-✅ API: http://localhost:8001/api/galeria
+🚀 Servidor da Galeria rodando na porta 8002
+✅ API: http://localhost:8002/api/galeria

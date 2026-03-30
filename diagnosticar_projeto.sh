@@ -101,7 +101,7 @@ echo ""
 
 echo "🔌 17. TESTE DE CONEXÃO - BACKEND DIRETO"
 echo "----------------------------------------"
-curl -s http://localhost:8000/api/health 2>&1 || echo "Falha na conexão"
+curl -s http://localhost:8002/api/health 2>&1 || echo "Falha na conexão"
 echo ""
 
 echo "🔌 18. TESTE DE CONEXÃO - VIA NGINX"
@@ -116,7 +116,7 @@ echo ""
 
 echo "🖥️ 20. PORTAS EM USO"
 echo "----------------------------------------"
-netstat -tlnp 2>/dev/null | grep -E ":(80|3000|8000|5432)" || echo "Nenhuma porta encontrada"
+netstat -tlnp 2>/dev/null | grep -E ":(80|3000|8002|5432)" || echo "Nenhuma porta encontrada"
 echo ""
 
 echo "📝 21. VARIÁVEIS DE AMBIENTE DO BACKEND"
@@ -126,7 +126,7 @@ echo ""
 
 echo "✅ 22. VERIFICAÇÃO FINAL"
 echo "----------------------------------------"
-echo "Backend respondendo: $(curl -s http://localhost:8000/api/health | grep -o 'healthy' || echo 'NÃO')"
+echo "Backend respondendo: $(curl -s http://localhost:8002/api/health | grep -o 'healthy' || echo 'NÃO')"
 echo "Nginx respondendo: $(curl -s -o /dev/null -w "%{http_code}" http://localhost | grep -q 200 && echo 'SIM' || echo 'NÃO')"
 echo "Página Admin acessível: $(curl -s -o /dev/null -w "%{http_code}" http://localhost/pages/admin/login.html | grep -q 200 && echo 'SIM' || echo 'NÃO')"
 echo ""

@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notícia - Paróquia São Miguel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .noticia-detalhe {
+            max-width: 900px;
+            margin: 60px auto;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        .noticia-detalhe img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+        }
+        .noticia-detalhe .conteudo {
+            padding: 40px;
+        }
+        .noticia-detalhe h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: #0f2b3d;
+            margin-bottom: 15px;
+        }
+        .noticia-detalhe .data {
+            color: #c9a227;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+            display: block;
+        }
+        .noticia-detalhe p {
+            color: #334155;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+        .btn-voltar {
+            display: inline-block;
+            background: #0f2b3d;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        .btn-voltar:hover {
+            background: #c9a227;
+            color: #0f2b3d;
+        }
+        .loading {
+            text-align: center;
+            padding: 80px;
+            color: #64748b;
+        }
+        @media (max-width: 768px) {
+            .noticia-detalhe .conteudo { padding: 25px; }
+            .noticia-detalhe h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="top-bar">
+            <div class="container">
+                <div><i class="fas fa-map-marker-alt"></i> <span id="config-endereco">Carregando...</span></div>
+                <div><i class="fas fa-phone-alt"></i> <span id="config-telefone">Carregando...</span></div>
+            </div>
+        </div>
+        <div class="container">
+            <nav class="nav-main">
+                <a href="/pages/apresentacao.html" class="logo">
+                    <div class="logo-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="logo-text">
+                        <h1>São Miguel Arcanjo</h1>
+                        <span>Paróquia Católica</span>
+                    </div>
+                </a>
+                <ul class="nav-menu">
+                    <li><a href="/pages/apresentacao.html">Apresentação</a></li>
+                    <li><a href="/pages/sobre.html">A Paróquia</a></li>
+                    <li><a href="/pages/horarios.html">Horários</a></li>
+                    <li><a href="/pages/pastorais.html">Pastorais</a></li>
+                    <li><a href="/pages/eventos.html">Eventos</a></li>
+                    <li><a href="/pages/noticias.html">Notícias</a></li>
+                    <li><a href="/pages/contato.html">Contato</a></li>
+                    <li><a href="/pages/admin/login.html" class="btn-donate">Admin</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div id="noticia-container" class="noticia-detalhe">
+        <div class="loading"><i class="fas fa-spinner fa-spin"></i> Carregando notícia...</div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3 class="footer-title"><span id="config-padroeiro">Carregando...</span></h3>
+                    <p><span id="config-endereco-footer">Carregando...</span></p>
+                    <p><i class="fas fa-phone"></i> <span id="config-telefone-footer">Carregando...</span></p>
+                    <p><i class="fas fa-envelope"></i> <span id="config-email-footer">Carregando...</span></p>
+                </div>
+                <div class="footer-links">
+                    <h3 class="footer-title">Links Rápidos</h3>
+                    <ul>
+                        <li><a href="/pages/sobre.html">A Paróquia</a></li>
+                        <li><a href="/pages/horarios.html">Horários</a></li>
+                        <li><a href="/pages/contato.html">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3 class="footer-title">Redes Sociais</h3>
+                    <ul>
+                        <li><a href="https://www.instagram.com/saomiguel.jlle/" target="_blank"><i class="fab fa-instagram"></i> Instagram</a></li>
+                        <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 Paróquia São Miguel Arcanjo. Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/config.js"></script>
+<script>
+    // Pega o ID da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const noticiaId = urlParams.get('id');
+    
+    console.log('ID da notícia:', noticiaId); // Debug
+
+    if (!noticiaId) {
+        document.getElementById('noticia-container').innerHTML = '<div class="loading">Notícia não encontrada. <a href="/pages/noticias.html">Voltar</a></div>';
+    } else {
+        fetch(`/api/noticias/${noticiaId}`)
+            .then(r => {
+                if (!r.ok) throw new Error('Notícia não encontrada');
+                return r.json();
+            })
+            .then(noticia => {
+                console.log('Notícia carregada:', noticia);
+                
+                const dataFormatada = noticia.data_publicacao ? new Date(noticia.data_publicacao).toLocaleDateString('pt-BR') : 'Data não informada';
+                const temImagem = noticia.imagem && noticia.imagem.trim() !== '';
+                let imagemUrl = noticia.imagem || '';
+                if (temImagem && imagemUrl.startsWith('/uploads/')) {
+                    imagemUrl = 'http://localhost:8002' + imagemUrl;
+                }
+                
+                let html = `
+                    ${temImagem ? `<img src="${imagemUrl}" alt="${noticia.titulo}" style="width:100%; max-height:400px; object-fit:cover;" onerror="this.style.display='none'">` : ''}
+                    <div class="conteudo">
+                        <h1>${noticia.titulo || 'Sem título'}</h1>
+                        <span class="data"><i class="far fa-calendar-alt"></i> ${dataFormatada}</span>
+                        <p>${noticia.conteudo || 'Conteúdo não disponível.'}</p>
+                        <a href="/pages/noticias.html" class="btn-voltar"><i class="fas fa-arrow-left"></i> Voltar para notícias</a>
+                    </div>
+                `;
+                
+                document.getElementById('noticia-container').innerHTML = html;
+            })
+            .catch(err => {
+                console.error('Erro:', err);
+                document.getElementById('noticia-container').innerHTML = `<div class="loading">Erro ao carregar notícia. <a href="/pages/noticias.html">Voltar</a></div>`;
+            });
+    }
+</script>
+</body>
+</html>
+
+

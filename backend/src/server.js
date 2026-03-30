@@ -8,6 +8,21 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Rota de login
+app.post('/api/admin/login', (req, res) => {
+  const { email, senha } = req.body;
+  console.log('Tentativa de login:', email, senha);
+  
+  if (email === 'admin@paroquia.com' && senha === 'admin') {
+    res.json({
+      token: 'admin-token',
+      user: { email: 'admin@paroquia.com', nome: 'Administrador' }
+    });
+  } else {
+    res.status(401).json({ error: 'Credenciais inválidas' });
+  }
+});
+
 let db;
 
 async function initDB() {
@@ -257,7 +272,7 @@ app.delete('/api/admin/contatos/:id', authMiddleware, async (req, res) => {
   res.status(204).send();
 });
 
-app.listen(8000, () => console.log('🚀 Servidor na porta 8000'));
+app.listen(8002, () => console.log('🚀 Servidor na porta 8002'));
 
 // ==================== GALERIA ====================
 app.get('/api/galeria/', async (req, res) => {

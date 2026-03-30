@@ -6,7 +6,7 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const PORT = 8001;
+const PORT = 8002;
 
 // Configurar MongoDB
 const MONGODB_URI = 'mongodb://localhost:27017';

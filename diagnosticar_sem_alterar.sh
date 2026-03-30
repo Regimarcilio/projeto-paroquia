@@ -87,7 +87,7 @@ fi
 echo ""
 
 echo "🔌 12. TESTE DIRETO BACKEND:"
-curl -s http://localhost:8000/api/health 2>&1 || echo "Falha"
+curl -s http://localhost:8002/api/health 2>&1 || echo "Falha"
 echo ""
 
 echo "🔌 13. TESTE VIA NGINX:"
